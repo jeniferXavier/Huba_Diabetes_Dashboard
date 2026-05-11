@@ -391,68 +391,68 @@ elif menu == "Insights":
     # ---------------------------------------------------
 
         with tabs[2]:
-        st.subheader("Meal, Carbohydrate, and Insulin Response")
+            st.subheader("Meal, Carbohydrate, and Insulin Response")
 
-        meal_df = df_view.copy()
+            meal_df = df_view.copy()
 
-        meal_df["glucose_next_2h"] = (
-            meal_df.groupby("patient_id")["glucose"].shift(-24)
-        )
+            meal_df["glucose_next_2h"] = (
+                meal_df.groupby("patient_id")["glucose"].shift(-24)
+            )
 
-        meal_df["post_meal_spike"] = (
-            meal_df["glucose_next_2h"] - meal_df["glucose"]
-        )
+            meal_df["post_meal_spike"] = (
+                meal_df["glucose_next_2h"] - meal_df["glucose"]
+            )
 
-        meal_df = meal_df[meal_df["carb_input"] > 0].dropna(
-            subset=["carb_input", "post_meal_spike", bolus_col]
-        )
+            meal_df = meal_df[meal_df["carb_input"] > 0].dropna(
+                subset=["carb_input", "post_meal_spike", bolus_col]
+            )
 
-        col1, col2 = st.columns(2)
+            col1, col2 = st.columns(2)
 
-        with col1:
-            fig = px.scatter(
-                meal_df.sample(min(5000, len(meal_df)), random_state=42),
-                x="carb_input",
-                y="post_meal_spike",
-                size=bolus_col,
-                color="glucose",
-                trendline="ols",
-                title="Carbohydrate Intake vs Post-Meal Spike"
+            with col1:
+                fig = px.scatter(
+                    meal_df.sample(min(5000, len(meal_df)), random_state=42),
+                    x="carb_input",
+                    y="post_meal_spike",
+                    size=bolus_col,
+                    color="glucose",
+                    trendline="ols",
+                    title="Carbohydrate Intake vs Post-Meal Spike"
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
+
+            with col2:
+                fig = px.density_heatmap(
+                    meal_df,
+                    x="carb_input",
+                    y="post_meal_spike",
+                    nbinsx=30,
+                    nbinsy=30,
+                    title="Carb Load vs Spike Risk Heatmap"
+                )
+
+                st.plotly_chart(fig, use_container_width=True)
+
+            st.subheader("Missed Bolus Detection")
+
+            meal_df["missed_bolus"] = (
+                (meal_df["carb_input"] > 20) &
+                (meal_df[bolus_col] == 0) &
+                (meal_df["glucose_next_2h"] > 180)
+            ).astype(int)
+
+            missed = meal_df["missed_bolus"].value_counts().reset_index()
+            missed.columns = ["Missed Bolus", "Count"]
+
+            fig = px.bar(
+                missed,
+                x="Missed Bolus",
+                y="Count",
+                title="Detected Missed Bolus Events"
             )
 
             st.plotly_chart(fig, use_container_width=True)
-
-        with col2:
-            fig = px.density_heatmap(
-                meal_df,
-                x="carb_input",
-                y="post_meal_spike",
-                nbinsx=30,
-                nbinsy=30,
-                title="Carb Load vs Spike Risk Heatmap"
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-
-        st.subheader("Missed Bolus Detection")
-
-        meal_df["missed_bolus"] = (
-            (meal_df["carb_input"] > 20) &
-            (meal_df[bolus_col] == 0) &
-            (meal_df["glucose_next_2h"] > 180)
-        ).astype(int)
-
-        missed = meal_df["missed_bolus"].value_counts().reset_index()
-        missed.columns = ["Missed Bolus", "Count"]
-
-        fig = px.bar(
-            missed,
-            x="Missed Bolus",
-            y="Count",
-            title="Detected Missed Bolus Events"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
 
     # ---------------------------------------------------
     # ACTIVITY + SLEEP
@@ -486,28 +486,28 @@ elif menu == "Insights":
         
             col1, col2 = st.columns(2)
 
-        with col1:
-            fig = px.bar(
-                act_summary,
-                x="activity_group",
-                y="avg_instability",
-                color="activity_group",
-                title="Activity Level vs Glucose Instability"
-            )
-            st.plotly_chart(fig, use_container_width=True)
+            with col1:
+                fig = px.bar(
+                    act_summary,
+                    x="activity_group",
+                    y="avg_instability",
+                    color="activity_group",
+                    title="Activity Level vs Glucose Instability"
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
-        with col2:
-            fig = px.scatter(
-                daily,
-                x="daily_steps",
-                y="daily_tir",
-                size="glucose_variability",
-                color="avg_glucose",
-                hover_data=["patient_id", "date"],
-                title="Daily Steps vs Time-In-Range"
-            )
-            fig.add_hline(y=70, line_dash="dash", line_color="red")
-            st.plotly_chart(fig, use_container_width=True)
+            with col2:
+                fig = px.scatter(
+                    daily,
+                    x="daily_steps",
+                    y="daily_tir",
+                    size="glucose_variability",
+                    color="avg_glucose",
+                    hover_data=["patient_id", "date"],
+                    title="Daily Steps vs Time-In-Range"
+                )
+                fig.add_hline(y=70, line_dash="dash", line_color="red")
+                st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------
 # NIGHT RISK
