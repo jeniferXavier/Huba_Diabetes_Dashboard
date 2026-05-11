@@ -313,201 +313,201 @@ elif menu == "Insights":
 # ---------------------------------------------------
 
     with tabs[0]:
-    st.subheader("Project Overview")
+        st.subheader("Project Overview")
 
-    st.markdown("""
-    **GlucoAI** combines CGM, insulin, meals, activity, heart rate, sleep, and demographic signals to support diabetes intelligence.
+        st.markdown("""
+        **GlucoAI** combines CGM, insulin, meals, activity, heart rate, sleep, and demographic signals to support diabetes intelligence.
 
-    This dashboard includes:
-    - Descriptive analytics: TIR, hypoglycemia, glucose trends
-    - Predictive analytics: hypo prediction, hyperglycemia prediction, ROC forecasting
-    - Prescriptive analytics: insulin effectiveness score, basal risk, carb guidance
-    - Patient stratification and risk monitoring
-    """)
+        This dashboard includes:
+        - Descriptive analytics: TIR, hypoglycemia, glucose trends
+        - Predictive analytics: hypo prediction, hyperglycemia prediction, ROC forecasting
+        - Prescriptive analytics: insulin effectiveness score, basal risk, carb guidance
+        - Patient stratification and risk monitoring
+        """)
 
-    st.success("Goal: Improve diabetes safety, reduce glucose instability, and support personalized intervention decisions.")
+        st.success("Goal: Improve diabetes safety, reduce glucose instability, and support personalized intervention decisions.")
 
 # ---------------------------------------------------
 # GLUCOSE OVERVIEW
 # ---------------------------------------------------
 
     with tabs[1]:
-    st.subheader("Glucose Monitoring Overview")
+        st.subheader("Glucose Monitoring Overview")
 
-    fig = px.line(
-        df_view,
-        x="time",
-        y="glucose",
-        color="patient_id",
-        title="24-Hour / Longitudinal Glucose Trend"
-    )
-
-    fig.add_hline(y=70, line_dash="dash", line_color="red")
-    fig.add_hline(y=180, line_dash="dash", line_color="red")
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        tir_summary = (
-            df_view
-            .groupby("patient_id")
-            .agg(
-                TBR=("is_hypoglycemia", "mean"),
-                TIR=("is_in_range", "mean"),
-                TAR=("is_hyperglycemia", "mean")
-            ) * 100
-        ).reset_index()
-
-        tir_melt = tir_summary.melt(
-            id_vars="patient_id",
-            var_name="Range",
-            value_name="Percentage"
-        )
-
-        fig = px.bar(
-            tir_melt,
-            x="patient_id",
-            y="Percentage",
-            color="Range",
-            title="TBR / TIR / TAR by Patient"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
-        fig = px.box(
+        fig = px.line(
             df_view,
-            x="patient_id",
+            x="time",
             y="glucose",
-            title="Glucose Distribution by Patient"
+            color="patient_id",
+            title="24-Hour / Longitudinal Glucose Trend"
         )
+
+        fig.add_hline(y=70, line_dash="dash", line_color="red")
+        fig.add_hline(y=180, line_dash="dash", line_color="red")
 
         st.plotly_chart(fig, use_container_width=True)
 
-# ---------------------------------------------------
-# MEAL + INSULIN
-# ---------------------------------------------------
-
-    with tabs[2]:
-    st.subheader("Meal, Carbohydrate, and Insulin Response")
-
-    meal_df = df_view.copy()
-
-    meal_df["glucose_next_2h"] = (
-        meal_df.groupby("patient_id")["glucose"].shift(-24)
-    )
-
-    meal_df["post_meal_spike"] = (
-        meal_df["glucose_next_2h"] - meal_df["glucose"]
-    )
-
-    meal_df = meal_df[meal_df["carb_input"] > 0].dropna(
-        subset=["carb_input", "post_meal_spike", bolus_col]
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = px.scatter(
-            meal_df.sample(min(5000, len(meal_df)), random_state=42),
-            x="carb_input",
-            y="post_meal_spike",
-            size=bolus_col,
-            color="glucose",
-            trendline="ols",
-            title="Carbohydrate Intake vs Post-Meal Spike"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
-        fig = px.density_heatmap(
-            meal_df,
-            x="carb_input",
-            y="post_meal_spike",
-            nbinsx=30,
-            nbinsy=30,
-            title="Carb Load vs Spike Risk Heatmap"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    st.subheader("Missed Bolus Detection")
-
-    meal_df["missed_bolus"] = (
-        (meal_df["carb_input"] > 20) &
-        (meal_df[bolus_col] == 0) &
-        (meal_df["glucose_next_2h"] > 180)
-    ).astype(int)
-
-    missed = meal_df["missed_bolus"].value_counts().reset_index()
-    missed.columns = ["Missed Bolus", "Count"]
-
-    fig = px.bar(
-        missed,
-        x="Missed Bolus",
-        y="Count",
-        title="Detected Missed Bolus Events"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-# ---------------------------------------------------
-# ACTIVITY + SLEEP
-# ---------------------------------------------------
-
-    with tabs[3]:
-        st.subheader("Activity Impact on Glucose Stability")
-    
-        activity_df = df_view.copy()
-    
-        activity_df["glucose_drift_1h"] = (
-            activity_df.groupby("patient_id")["glucose"].diff(12)
-        )
-    
-        activity_df["activity_group"] = pd.cut(
-            activity_df["steps"],
-            bins=[-1, 0, 50, 500, 100000],
-            labels=["Sedentary", "Low", "Moderate", "High"]
-        )
-    
-        act_summary = (
-            activity_df
-            .groupby("activity_group", observed=True)
-            .agg(
-                avg_drift=("glucose_drift_1h", "mean"),
-                avg_instability=("glucose_rolling_std_1h", "mean"),
-                avg_glucose=("glucose", "mean")
-            )
-            .reset_index()
-        )
-    
         col1, col2 = st.columns(2)
 
-    with col1:
-        fig = px.bar(
-            act_summary,
-            x="activity_group",
-            y="avg_instability",
-            color="activity_group",
-            title="Activity Level vs Glucose Instability"
+        with col1:
+            tir_summary = (
+                df_view
+                .groupby("patient_id")
+                .agg(
+                    TBR=("is_hypoglycemia", "mean"),
+                    TIR=("is_in_range", "mean"),
+                    TAR=("is_hyperglycemia", "mean")
+                ) * 100
+            ).reset_index()
+
+            tir_melt = tir_summary.melt(
+                id_vars="patient_id",
+                var_name="Range",
+                value_name="Percentage"
+            )
+
+            fig = px.bar(
+                tir_melt,
+                x="patient_id",
+                y="Percentage",
+                color="Range",
+                title="TBR / TIR / TAR by Patient"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            fig = px.box(
+                df_view,
+                x="patient_id",
+                y="glucose",
+                title="Glucose Distribution by Patient"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+    # ---------------------------------------------------
+    # MEAL + INSULIN
+    # ---------------------------------------------------
+
+        with tabs[2]:
+        st.subheader("Meal, Carbohydrate, and Insulin Response")
+
+        meal_df = df_view.copy()
+
+        meal_df["glucose_next_2h"] = (
+            meal_df.groupby("patient_id")["glucose"].shift(-24)
         )
+
+        meal_df["post_meal_spike"] = (
+            meal_df["glucose_next_2h"] - meal_df["glucose"]
+        )
+
+        meal_df = meal_df[meal_df["carb_input"] > 0].dropna(
+            subset=["carb_input", "post_meal_spike", bolus_col]
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            fig = px.scatter(
+                meal_df.sample(min(5000, len(meal_df)), random_state=42),
+                x="carb_input",
+                y="post_meal_spike",
+                size=bolus_col,
+                color="glucose",
+                trendline="ols",
+                title="Carbohydrate Intake vs Post-Meal Spike"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            fig = px.density_heatmap(
+                meal_df,
+                x="carb_input",
+                y="post_meal_spike",
+                nbinsx=30,
+                nbinsy=30,
+                title="Carb Load vs Spike Risk Heatmap"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        st.subheader("Missed Bolus Detection")
+
+        meal_df["missed_bolus"] = (
+            (meal_df["carb_input"] > 20) &
+            (meal_df[bolus_col] == 0) &
+            (meal_df["glucose_next_2h"] > 180)
+        ).astype(int)
+
+        missed = meal_df["missed_bolus"].value_counts().reset_index()
+        missed.columns = ["Missed Bolus", "Count"]
+
+        fig = px.bar(
+            missed,
+            x="Missed Bolus",
+            y="Count",
+            title="Detected Missed Bolus Events"
+        )
+
         st.plotly_chart(fig, use_container_width=True)
 
-    with col2:
-        fig = px.scatter(
-            daily,
-            x="daily_steps",
-            y="daily_tir",
-            size="glucose_variability",
-            color="avg_glucose",
-            hover_data=["patient_id", "date"],
-            title="Daily Steps vs Time-In-Range"
-        )
-        fig.add_hline(y=70, line_dash="dash", line_color="red")
-        st.plotly_chart(fig, use_container_width=True)
+    # ---------------------------------------------------
+    # ACTIVITY + SLEEP
+    # ---------------------------------------------------
+
+        with tabs[3]:
+            st.subheader("Activity Impact on Glucose Stability")
+        
+            activity_df = df_view.copy()
+        
+            activity_df["glucose_drift_1h"] = (
+                activity_df.groupby("patient_id")["glucose"].diff(12)
+            )
+        
+            activity_df["activity_group"] = pd.cut(
+                activity_df["steps"],
+                bins=[-1, 0, 50, 500, 100000],
+                labels=["Sedentary", "Low", "Moderate", "High"]
+            )
+        
+            act_summary = (
+                activity_df
+                .groupby("activity_group", observed=True)
+                .agg(
+                    avg_drift=("glucose_drift_1h", "mean"),
+                    avg_instability=("glucose_rolling_std_1h", "mean"),
+                    avg_glucose=("glucose", "mean")
+                )
+                .reset_index()
+            )
+        
+            col1, col2 = st.columns(2)
+
+        with col1:
+            fig = px.bar(
+                act_summary,
+                x="activity_group",
+                y="avg_instability",
+                color="activity_group",
+                title="Activity Level vs Glucose Instability"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col2:
+            fig = px.scatter(
+                daily,
+                x="daily_steps",
+                y="daily_tir",
+                size="glucose_variability",
+                color="avg_glucose",
+                hover_data=["patient_id", "date"],
+                title="Daily Steps vs Time-In-Range"
+            )
+            fig.add_hline(y=70, line_dash="dash", line_color="red")
+            st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------
 # NIGHT RISK
