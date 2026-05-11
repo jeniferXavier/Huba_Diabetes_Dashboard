@@ -458,33 +458,33 @@ with tabs[2]:
 # ACTIVITY + SLEEP
 # ---------------------------------------------------
 
-with tabs[3]:
-    st.subheader("Activity Impact on Glucose Stability")
-
-    activity_df = df_view.copy()
-
-    activity_df["glucose_drift_1h"] = (
-        activity_df.groupby("patient_id")["glucose"].diff(12)
-    )
-
-    activity_df["activity_group"] = pd.cut(
-        activity_df["steps"],
-        bins=[-1, 0, 50, 500, 100000],
-        labels=["Sedentary", "Low", "Moderate", "High"]
-    )
-
-    act_summary = (
-        activity_df
-        .groupby("activity_group", observed=True)
-        .agg(
-            avg_drift=("glucose_drift_1h", "mean"),
-            avg_instability=("glucose_rolling_std_1h", "mean"),
-            avg_glucose=("glucose", "mean")
+    with tabs[3]:
+        st.subheader("Activity Impact on Glucose Stability")
+    
+        activity_df = df_view.copy()
+    
+        activity_df["glucose_drift_1h"] = (
+            activity_df.groupby("patient_id")["glucose"].diff(12)
         )
-        .reset_index()
-    )
-
-    col1, col2 = st.columns(2)
+    
+        activity_df["activity_group"] = pd.cut(
+            activity_df["steps"],
+            bins=[-1, 0, 50, 500, 100000],
+            labels=["Sedentary", "Low", "Moderate", "High"]
+        )
+    
+        act_summary = (
+            activity_df
+            .groupby("activity_group", observed=True)
+            .agg(
+                avg_drift=("glucose_drift_1h", "mean"),
+                avg_instability=("glucose_rolling_std_1h", "mean"),
+                avg_glucose=("glucose", "mean")
+            )
+            .reset_index()
+        )
+    
+        col1, col2 = st.columns(2)
 
     with col1:
         fig = px.bar(
@@ -513,231 +513,231 @@ with tabs[3]:
 # NIGHT RISK
 # ---------------------------------------------------
 
-with tabs[4]:
-    st.subheader("Nocturnal Hypoglycemia Risk")
-
-    night_df = df_view[df_view["is_night"] == 1].copy()
-    night_df["nocturnal_hypo"] = (night_df["glucose"] < 70).astype(int)
-
-    risk_curve = (
-        night_df
-        .groupby("basal_rate")["nocturnal_hypo"]
-        .mean()
-        .reset_index()
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = px.line(
-            risk_curve,
-            x="basal_rate",
-            y="nocturnal_hypo",
-            markers=True,
-            title="Night Basal Rate vs Hypoglycemia Risk"
+    with tabs[4]:
+        st.subheader("Nocturnal Hypoglycemia Risk")
+    
+        night_df = df_view[df_view["is_night"] == 1].copy()
+        night_df["nocturnal_hypo"] = (night_df["glucose"] < 70).astype(int)
+    
+        risk_curve = (
+            night_df
+            .groupby("basal_rate")["nocturnal_hypo"]
+            .mean()
+            .reset_index()
         )
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
-        fig = px.box(
-            night_df,
-            x="nocturnal_hypo",
-            y="basal_rate",
-            title="Basal Rate Distribution by Night Hypoglycemia"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+    
+        col1, col2 = st.columns(2)
+    
+        with col1:
+            fig = px.line(
+                risk_curve,
+                x="basal_rate",
+                y="nocturnal_hypo",
+                markers=True,
+                title="Night Basal Rate vs Hypoglycemia Risk"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+    
+        with col2:
+            fig = px.box(
+                night_df,
+                x="nocturnal_hypo",
+                y="basal_rate",
+                title="Basal Rate Distribution by Night Hypoglycemia"
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------
 # PREDICTIVE AI
 # ---------------------------------------------------
 
-with tabs[5]:
-    st.subheader("Predictive AI Models")
-
-    model_choice = st.selectbox(
-        "Select Prediction Task",
-        [
-            "Hypoglycemia Next 30 Minutes",
-            "Hyperglycemia >200 Within 2 Hours After Meal",
-            "Next 15-Minute Glucose ROC",
-            "Future TIR Decline Risk"
-        ]
-    )
-
-    if model_choice == "Hypoglycemia Next 30 Minutes":
-        model_data = df_view.copy()
-        model_data["target"] = (
-            model_data.groupby("patient_id")["glucose"].shift(-6) < 70
-        ).astype(int)
-
-        features = [
-            "glucose", "glucose_roc", "glucose_rolling_std_1h",
-            "basal_rate", bolus_col, "steps", "heart_rate", "hour"
-        ]
-
-        task = "classification"
-
-    elif model_choice == "Hyperglycemia >200 Within 2 Hours After Meal":
-        model_data = df_view[df_view["carb_input"] > 0].copy()
-        model_data["target"] = (
-            model_data.groupby("patient_id")["glucose"].shift(-24) > 200
-        ).astype(int)
-
-        features = [
-            "glucose", "carb_input", bolus_col,
-            "basal_rate", "steps", "heart_rate", "hour"
-        ]
-
-        task = "classification"
-
-    elif model_choice == "Next 15-Minute Glucose ROC":
-        model_data = df_view.copy()
-        model_data["target"] = (
-            model_data.groupby("patient_id")["glucose_roc"].shift(-3)
+    with tabs[5]:
+        st.subheader("Predictive AI Models")
+    
+        model_choice = st.selectbox(
+            "Select Prediction Task",
+            [
+                "Hypoglycemia Next 30 Minutes",
+                "Hyperglycemia >200 Within 2 Hours After Meal",
+                "Next 15-Minute Glucose ROC",
+                "Future TIR Decline Risk"
+            ]
         )
-
-        features = [
-            "glucose", "glucose_roc", "glucose_rolling_std_1h",
-            "basal_rate", bolus_col, "steps", "heart_rate", "hour"
-        ]
-
-        task = "regression"
-
-    else:
-        model_data = daily.copy()
-        model_data["future_tir"] = (
-            model_data.groupby("patient_id")["daily_tir"].shift(-7)
-        )
-        model_data["target"] = (
-            model_data["future_tir"] < model_data["daily_tir"] - 10
-        ).astype(int)
-
-        features = [
-            "daily_tir", "avg_glucose", "glucose_variability",
-            "daily_steps", "avg_hr", "avg_basal", "total_bolus"
-        ]
-
-        task = "classification"
-
-    model_df = model_data[features + ["target"]].dropna()
-
-    if len(model_df) > 20000:
-        model_df = model_df.sample(20000, random_state=42)
-
-    if len(model_df) < 50 or model_df["target"].nunique() < 2:
-        st.warning("Not enough balanced data for this model.")
-    else:
-        X = model_df[features]
-        y = model_df["target"]
-
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.25, random_state=42
-        )
-
-        if task == "classification":
-            model = RandomForestClassifier(
-                n_estimators=100,
-                max_depth=8,
-                random_state=42,
-                class_weight="balanced",
-                n_jobs=-1
+    
+        if model_choice == "Hypoglycemia Next 30 Minutes":
+            model_data = df_view.copy()
+            model_data["target"] = (
+                model_data.groupby("patient_id")["glucose"].shift(-6) < 70
+            ).astype(int)
+    
+            features = [
+                "glucose", "glucose_roc", "glucose_rolling_std_1h",
+                "basal_rate", bolus_col, "steps", "heart_rate", "hour"
+            ]
+    
+            task = "classification"
+    
+        elif model_choice == "Hyperglycemia >200 Within 2 Hours After Meal":
+            model_data = df_view[df_view["carb_input"] > 0].copy()
+            model_data["target"] = (
+                model_data.groupby("patient_id")["glucose"].shift(-24) > 200
+            ).astype(int)
+    
+            features = [
+                "glucose", "carb_input", bolus_col,
+                "basal_rate", "steps", "heart_rate", "hour"
+            ]
+    
+            task = "classification"
+    
+        elif model_choice == "Next 15-Minute Glucose ROC":
+            model_data = df_view.copy()
+            model_data["target"] = (
+                model_data.groupby("patient_id")["glucose_roc"].shift(-3)
             )
-
-            model.fit(X_train, y_train)
-            pred = model.predict(X_test)
-            prob = model.predict_proba(X_test)[:, 1]
-
-            st.metric("Accuracy", f"{accuracy_score(y_test, pred):.3f}")
-            st.metric("ROC-AUC", f"{roc_auc_score(y_test, prob):.3f}")
-
+    
+            features = [
+                "glucose", "glucose_roc", "glucose_rolling_std_1h",
+                "basal_rate", bolus_col, "steps", "heart_rate", "hour"
+            ]
+    
+            task = "regression"
+    
         else:
-            model = RandomForestRegressor(
-                n_estimators=80,
-                max_depth=8,
-                random_state=42,
-                n_jobs=-1
+            model_data = daily.copy()
+            model_data["future_tir"] = (
+                model_data.groupby("patient_id")["daily_tir"].shift(-7)
             )
-
-            model.fit(X_train, y_train)
-            pred = model.predict(X_test)
-
-            st.metric("MAE", f"{mean_absolute_error(y_test, pred):.3f}")
-            st.metric("R² Score", f"{r2_score(y_test, pred):.3f}")
-
-        importance = pd.DataFrame({
-            "Feature": features,
-            "Importance": model.feature_importances_
-        }).sort_values("Importance", ascending=True)
-
-        fig = px.bar(
-            importance,
-            x="Importance",
-            y="Feature",
-            orientation="h",
-            title=f"Feature Importance: {model_choice}"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
+            model_data["target"] = (
+                model_data["future_tir"] < model_data["daily_tir"] - 10
+            ).astype(int)
+    
+            features = [
+                "daily_tir", "avg_glucose", "glucose_variability",
+                "daily_steps", "avg_hr", "avg_basal", "total_bolus"
+            ]
+    
+            task = "classification"
+    
+        model_df = model_data[features + ["target"]].dropna()
+    
+        if len(model_df) > 20000:
+            model_df = model_df.sample(20000, random_state=42)
+    
+        if len(model_df) < 50 or model_df["target"].nunique() < 2:
+            st.warning("Not enough balanced data for this model.")
+        else:
+            X = model_df[features]
+            y = model_df["target"]
+    
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y, test_size=0.25, random_state=42
+            )
+    
+            if task == "classification":
+                model = RandomForestClassifier(
+                    n_estimators=100,
+                    max_depth=8,
+                    random_state=42,
+                    class_weight="balanced",
+                    n_jobs=-1
+                )
+    
+                model.fit(X_train, y_train)
+                pred = model.predict(X_test)
+                prob = model.predict_proba(X_test)[:, 1]
+    
+                st.metric("Accuracy", f"{accuracy_score(y_test, pred):.3f}")
+                st.metric("ROC-AUC", f"{roc_auc_score(y_test, prob):.3f}")
+    
+            else:
+                model = RandomForestRegressor(
+                    n_estimators=80,
+                    max_depth=8,
+                    random_state=42,
+                    n_jobs=-1
+                )
+    
+                model.fit(X_train, y_train)
+                pred = model.predict(X_test)
+    
+                st.metric("MAE", f"{mean_absolute_error(y_test, pred):.3f}")
+                st.metric("R² Score", f"{r2_score(y_test, pred):.3f}")
+    
+            importance = pd.DataFrame({
+                "Feature": features,
+                "Importance": model.feature_importances_
+            }).sort_values("Importance", ascending=True)
+    
+            fig = px.bar(
+                importance,
+                x="Importance",
+                y="Feature",
+                orientation="h",
+                title=f"Feature Importance: {model_choice}"
+            )
+    
+            st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------
 # PRESCRIPTIVE ANALYTICS
 # ---------------------------------------------------
 
-with tabs[6]:
-    st.subheader("Prescriptive Insulin Effectiveness Score")
-
-    score = (
-        df_view
-        .groupby("patient_id")
-        .agg(
-            tir=("is_in_range", "mean"),
-            glucose_variability=("glucose", "std"),
-            hypo_rate=("is_hypoglycemia", "mean"),
-            hyper_rate=("is_hyperglycemia", "mean"),
-            avg_steps=("steps", "mean"),
-            total_bolus=(bolus_col, "sum"),
-            avg_basal=("basal_rate", "mean")
+    with tabs[6]:
+        st.subheader("Prescriptive Insulin Effectiveness Score")
+    
+        score = (
+            df_view
+            .groupby("patient_id")
+            .agg(
+                tir=("is_in_range", "mean"),
+                glucose_variability=("glucose", "std"),
+                hypo_rate=("is_hypoglycemia", "mean"),
+                hyper_rate=("is_hyperglycemia", "mean"),
+                avg_steps=("steps", "mean"),
+                total_bolus=(bolus_col, "sum"),
+                avg_basal=("basal_rate", "mean")
+            )
+            .reset_index()
         )
-        .reset_index()
-    )
-
-    score["tir_score"] = score["tir"] * 40
-
-    score["stability_score"] = (
-        1 - score["glucose_variability"].rank(pct=True)
-    ) * 25
-
-    score["hypo_safety_score"] = (
-        1 - score["hypo_rate"].rank(pct=True)
-    ) * 20
-
-    score["activity_score"] = (
-        score["avg_steps"].rank(pct=True)
-    ) * 15
-
-    score["insulin_effectiveness_score"] = (
-        score["tir_score"] +
-        score["stability_score"] +
-        score["hypo_safety_score"] +
-        score["activity_score"]
-    ).clip(0, 100)
-
-    score = score.sort_values(
-        "insulin_effectiveness_score",
-        ascending=False
-    )
-
-    st.dataframe(score, use_container_width=True)
-
-    fig = px.bar(
-        score,
-        x="patient_id",
-        y="insulin_effectiveness_score",
-        color="insulin_effectiveness_score",
-        title="0–100 Insulin Effectiveness Score"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+    
+        score["tir_score"] = score["tir"] * 40
+    
+        score["stability_score"] = (
+            1 - score["glucose_variability"].rank(pct=True)
+        ) * 25
+    
+        score["hypo_safety_score"] = (
+            1 - score["hypo_rate"].rank(pct=True)
+        ) * 20
+    
+        score["activity_score"] = (
+            score["avg_steps"].rank(pct=True)
+        ) * 15
+    
+        score["insulin_effectiveness_score"] = (
+            score["tir_score"] +
+            score["stability_score"] +
+            score["hypo_safety_score"] +
+            score["activity_score"]
+        ).clip(0, 100)
+    
+        score = score.sort_values(
+            "insulin_effectiveness_score",
+            ascending=False
+        )
+    
+        st.dataframe(score, use_container_width=True)
+    
+        fig = px.bar(
+            score,
+            x="patient_id",
+            y="insulin_effectiveness_score",
+            color="insulin_effectiveness_score",
+            title="0–100 Insulin Effectiveness Score"
+        )
+    
+        st.plotly_chart(fig, use_container_width=True)
 
 # ===================================================
 # KEY TAKEAWAYS
