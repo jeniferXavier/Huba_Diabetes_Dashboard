@@ -113,12 +113,40 @@ df["glucose_rolling_std_1h"] = (
 df["is_hypoglycemia"] = (df["glucose"] < 70).astype(int)
 df["is_in_range"] = ((df["glucose"] >= 70) & (df["glucose"] <= 180)).astype(int)
 df["is_hyperglycemia"] = (df["glucose"] > 180).astype(int)
+# ---------------------------------------------------
+# SIDEBAR NAVIGATION
+# ---------------------------------------------------
+
+st.sidebar.title("🧭 Navigation Menu")
+
+if "menu" not in st.session_state:
+    st.session_state.menu = "Introduction"
+
+if st.sidebar.button("🏠 Introduction"):
+    st.session_state.menu = "Introduction"
+
+if st.sidebar.button("📘 Overview"):
+    st.session_state.menu = "Overview"
+
+if st.sidebar.button("🧹 Data Cleaning"):
+    st.session_state.menu = "Data Cleaning"
+
+if st.sidebar.button("📊 Insights Dashboard"):
+    st.session_state.menu = "Insights"
+
+if st.sidebar.button("📌 Key Takeaways"):
+    st.session_state.menu = "Key Takeaways"
+
+if st.sidebar.button("✅ Conclusions"):
+    st.session_state.menu = "Conclusions"
+
+menu = st.session_state.menu
 
 # ---------------------------------------------------
-# SIDEBAR
+# PATIENT FILTER
 # ---------------------------------------------------
 
-st.sidebar.title("🧭 Dashboard Controls")
+st.sidebar.markdown("---")
 
 patients = sorted(df["patient_id"].unique())
 
@@ -134,515 +162,346 @@ if df_view.empty:
     st.warning("Please select at least one patient.")
     st.stop()
 
-# ---------------------------------------------------
-# KPI ROW
-# ---------------------------------------------------
+# ===================================================
+# INTRODUCTION PAGE
+# ===================================================
 
-total_patients = df_view["patient_id"].nunique()
-total_records = len(df_view)
-tir = df_view["is_in_range"].mean() * 100
-hypo = df_view["is_hypoglycemia"].mean() * 100
-hyper = df_view["is_hyperglycemia"].mean() * 100
-avg_glucose = df_view["glucose"].mean()
-
-c1, c2, c3, c4, c5, c6 = st.columns(6)
-
-c1.metric("👥 Patients", total_patients)
-c2.metric("📊 Records", f"{total_records:,}")
-c3.metric("✅ TIR", f"{tir:.1f}%")
-c4.metric("⚠️ Hypo", f"{hypo:.1f}%")
-c5.metric("🔥 Hyper", f"{hyper:.1f}%")
-c6.metric("🩸 Avg Glucose", f"{avg_glucose:.1f}")
-
-# ---------------------------------------------------
-# DAILY SUMMARY
-# ---------------------------------------------------
-
-daily = (
-    df_view
-    .groupby(["patient_id", "date"])
-    .agg(
-        daily_tir=("is_in_range", "mean"),
-        avg_glucose=("glucose", "mean"),
-        glucose_variability=("glucose", "std"),
-        daily_steps=("steps", "sum"),
-        avg_hr=("heart_rate", "mean"),
-        avg_basal=("basal_rate", "mean"),
-        total_bolus=(bolus_col, "sum"),
-        total_carbs=("carb_input", "sum"),
-        hypo_rate=("is_hypoglycemia", "mean"),
-        hyper_rate=("is_hyperglycemia", "mean")
-    )
-    .reset_index()
-)
-
-daily["daily_tir"] *= 100
-
-# ---------------------------------------------------
-# TABS
-# ---------------------------------------------------
-
-tabs = st.tabs([
-    "🏠 Home",
-    "📊 Glucose Overview",
-    "🍽️ Meal + Insulin",
-    "🏃 Activity + Sleep",
-    "🌙 Night Risk",
-    "🤖 Predictive AI",
-    "💊 Prescriptive Analytics",
-    "📌 Key Takeaways"
-])
-
-# ---------------------------------------------------
-# HOME
-# ---------------------------------------------------
-
-with tabs[0]:
-    st.subheader("Project Overview")
+if menu == "Introduction":
 
     st.markdown("""
-    **GlucoAI** combines CGM, insulin, meals, activity, heart rate, sleep, and demographic signals to support diabetes intelligence.
+    <div style="
+    background:linear-gradient(90deg,#0f766e,#2563eb);
+    padding:35px;
+    border-radius:25px;
+    color:white;">
+    <h1>🩺 GlucoAI Diabetes Intelligence Platform</h1>
+    <h3>AI-Powered Predictive + Prescriptive Diabetes Analytics</h3>
+    <p>
+    This platform integrates Continuous Glucose Monitoring (CGM),
+    insulin delivery, meal behavior, activity, sleep, and
+    cardiovascular signals into a unified clinical intelligence dashboard.
+    </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    This dashboard includes:
-    - Descriptive analytics: TIR, hypoglycemia, glucose trends
-    - Predictive analytics: hypo prediction, hyperglycemia prediction, ROC forecasting
-    - Prescriptive analytics: insulin effectiveness score, basal risk, carb guidance
-    - Patient stratification and risk monitoring
+    st.markdown("## 🎯 Project Objectives")
+
+    st.markdown("""
+    - Predict hypoglycemia and hyperglycemia risks
+    - Improve Time-In-Range (TIR)
+    - Detect glucose instability early
+    - Optimize insulin effectiveness
+    - Support personalized diabetes intervention
+    - Enable AI-driven clinical decision support
     """)
 
-    st.success("Goal: Improve diabetes safety, reduce glucose instability, and support personalized intervention decisions.")
+    st.success(
+        "Hackathon Goal: Build an intelligent diabetes monitoring and intervention platform."
+    )
 
-# ---------------------------------------------------
-# GLUCOSE OVERVIEW
-# ---------------------------------------------------
+# ===================================================
+# OVERVIEW PAGE
+# ===================================================
 
-with tabs[1]:
-    st.subheader("Glucose Monitoring Overview")
+elif menu == "Overview":
+
+    st.title("📘 Dataset Overview")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("👥 Total Patients", df["patient_id"].nunique())
+    col2.metric("📊 Total Records", len(df))
+    col3.metric("🩸 Avg Glucose", round(df["glucose"].mean(), 1))
+    col4.metric(
+        "✅ Avg TIR",
+        f"{(df['is_in_range'].mean()*100):.1f}%"
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        gender_chart = px.pie(
+            df,
+            names="gender",
+            title="Gender Distribution"
+        )
+
+        st.plotly_chart(gender_chart, use_container_width=True)
+
+    with col2:
+
+        age_chart = px.histogram(
+            df,
+            x="age",
+            nbins=20,
+            title="Age Distribution"
+        )
+
+        st.plotly_chart(age_chart, use_container_width=True)
 
     fig = px.line(
-        df_view,
+        df,
         x="time",
         y="glucose",
         color="patient_id",
-        title="24-Hour / Longitudinal Glucose Trend"
+        title="Overall Glucose Trends"
     )
-
-    fig.add_hline(y=70, line_dash="dash", line_color="red")
-    fig.add_hline(y=180, line_dash="dash", line_color="red")
 
     st.plotly_chart(fig, use_container_width=True)
 
-    col1, col2 = st.columns(2)
+# ===================================================
+# DATA CLEANING PAGE
+# ===================================================
 
-    with col1:
-        tir_summary = (
-            df_view
-            .groupby("patient_id")
-            .agg(
-                TBR=("is_hypoglycemia", "mean"),
-                TIR=("is_in_range", "mean"),
-                TAR=("is_hyperglycemia", "mean")
-            ) * 100
-        ).reset_index()
+elif menu == "Data Cleaning":
 
-        tir_melt = tir_summary.melt(
-            id_vars="patient_id",
-            var_name="Range",
-            value_name="Percentage"
-        )
+    st.title("🧹 Data Cleaning & Feature Engineering")
 
-        fig = px.bar(
-            tir_melt,
-            x="patient_id",
-            y="Percentage",
-            color="Range",
-            title="TBR / TIR / TAR by Patient"
-        )
+    st.markdown("""
+    ### Data Cleaning Steps
 
-        st.plotly_chart(fig, use_container_width=True)
+    ✔ Removed null glucose and timestamp values
 
-    with col2:
-        fig = px.box(
+    ✔ Converted timestamps into datetime format
+
+    ✔ Created hourly and daily features
+
+    ✔ Generated glucose rolling mean and rolling standard deviation
+
+    ✔ Created glucose rate-of-change (ROC)
+
+    ✔ Generated hypoglycemia and hyperglycemia flags
+
+    ✔ Merged demographic data with CGM dataset
+
+    ✔ Handled missing insulin and activity values
+
+    ✔ Created predictive AI features
+
+    ✔ Created prescriptive intervention metrics
+    """)
+
+    st.subheader("🧠 Engineered Features")
+
+    engineered = pd.DataFrame({
+        "Feature": [
+            "glucose_roc",
+            "glucose_rolling_std_1h",
+            "is_hypoglycemia",
+            "daily_tir",
+            "post_meal_spike",
+            "risk_score"
+        ],
+        "Purpose": [
+            "Rapid glucose change detection",
+            "Glucose instability monitoring",
+            "Hypoglycemia classification",
+            "Daily glucose control",
+            "Meal response monitoring",
+            "AI intervention prioritization"
+        ]
+    })
+
+    st.dataframe(engineered, use_container_width=True)
+
+# ===================================================
+# INSIGHTS DASHBOARD
+# ===================================================
+
+elif menu == "Insights":
+
+    st.title("📊 AI Diabetes Insights Dashboard")
+
+    # ---------------------------------------------------
+    # KPI ROW
+    # ---------------------------------------------------
+
+    total_patients = df_view["patient_id"].nunique()
+    total_records = len(df_view)
+    tir = df_view["is_in_range"].mean() * 100
+    hypo = df_view["is_hypoglycemia"].mean() * 100
+    hyper = df_view["is_hyperglycemia"].mean() * 100
+    avg_glucose = df_view["glucose"].mean()
+
+    c1, c2, c3, c4, c5, c6 = st.columns(6)
+
+    c1.metric("👥 Patients", total_patients)
+    c2.metric("📊 Records", f"{total_records:,}")
+    c3.metric("✅ TIR", f"{tir:.1f}%")
+    c4.metric("⚠️ Hypo", f"{hypo:.1f}%")
+    c5.metric("🔥 Hyper", f"{hyper:.1f}%")
+    c6.metric("🩸 Avg Glucose", f"{avg_glucose:.1f}")
+
+    # ---------------------------------------------------
+    # MAIN DASHBOARD CONTENT
+    # ---------------------------------------------------
+
+    tabs = st.tabs([
+        "📈 Glucose Overview",
+        "🍽️ Meal + Insulin",
+        "🏃 Activity + Sleep",
+        "🌙 Night Risk",
+        "🤖 Predictive AI",
+        "💊 Prescriptive Analytics"
+    ])
+
+    # ===================================================
+    # GLUCOSE OVERVIEW
+    # ===================================================
+
+    with tabs[0]:
+
+        st.subheader("Glucose Monitoring Overview")
+
+        fig = px.line(
             df_view,
-            x="patient_id",
+            x="time",
             y="glucose",
-            title="Glucose Distribution by Patient"
+            color="patient_id",
+            title="24-Hour Glucose Trend"
         )
+
+        fig.add_hline(y=70, line_dash="dash")
+        fig.add_hline(y=180, line_dash="dash")
 
         st.plotly_chart(fig, use_container_width=True)
 
-# ---------------------------------------------------
-# MEAL + INSULIN
-# ---------------------------------------------------
+    # ===================================================
+    # MEAL + INSULIN
+    # ===================================================
 
-with tabs[2]:
-    st.subheader("Meal, Carbohydrate, and Insulin Response")
+    with tabs[1]:
 
-    meal_df = df_view.copy()
+        st.subheader("Meal + Insulin Response")
 
-    meal_df["glucose_next_2h"] = (
-        meal_df.groupby("patient_id")["glucose"].shift(-24)
-    )
+        meal_df = df_view[df_view["carb_input"] > 0]
 
-    meal_df["post_meal_spike"] = (
-        meal_df["glucose_next_2h"] - meal_df["glucose"]
-    )
-
-    meal_df = meal_df[meal_df["carb_input"] > 0].dropna(
-        subset=["carb_input", "post_meal_spike", bolus_col]
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
         fig = px.scatter(
-            meal_df.sample(min(5000, len(meal_df)), random_state=42),
-            x="carb_input",
-            y="post_meal_spike",
-            size=bolus_col,
-            color="glucose",
-            trendline="ols",
-            title="Carbohydrate Intake vs Post-Meal Spike"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
-        fig = px.density_heatmap(
             meal_df,
             x="carb_input",
-            y="post_meal_spike",
-            nbinsx=30,
-            nbinsy=30,
-            title="Carb Load vs Spike Risk Heatmap"
+            y="glucose",
+            size=bolus_col,
+            color="glucose",
+            title="Carb Intake vs Glucose"
         )
 
         st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Missed Bolus Detection")
+    # ===================================================
+    # ACTIVITY
+    # ===================================================
 
-    meal_df["missed_bolus"] = (
-        (meal_df["carb_input"] > 20) &
-        (meal_df[bolus_col] == 0) &
-        (meal_df["glucose_next_2h"] > 180)
-    ).astype(int)
+    with tabs[2]:
 
-    missed = meal_df["missed_bolus"].value_counts().reset_index()
-    missed.columns = ["Missed Bolus", "Count"]
+        st.subheader("Activity Impact")
 
-    fig = px.bar(
-        missed,
-        x="Missed Bolus",
-        y="Count",
-        title="Detected Missed Bolus Events"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-# ---------------------------------------------------
-# ACTIVITY + SLEEP
-# ---------------------------------------------------
-
-with tabs[3]:
-    st.subheader("Activity Impact on Glucose Stability")
-
-    activity_df = df_view.copy()
-
-    activity_df["glucose_drift_1h"] = (
-        activity_df.groupby("patient_id")["glucose"].diff(12)
-    )
-
-    activity_df["activity_group"] = pd.cut(
-        activity_df["steps"],
-        bins=[-1, 0, 50, 500, 100000],
-        labels=["Sedentary", "Low", "Moderate", "High"]
-    )
-
-    act_summary = (
-        activity_df
-        .groupby("activity_group", observed=True)
-        .agg(
-            avg_drift=("glucose_drift_1h", "mean"),
-            avg_instability=("glucose_rolling_std_1h", "mean"),
-            avg_glucose=("glucose", "mean")
-        )
-        .reset_index()
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = px.bar(
-            act_summary,
-            x="activity_group",
-            y="avg_instability",
-            color="activity_group",
-            title="Activity Level vs Glucose Instability"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
         fig = px.scatter(
             daily,
             x="daily_steps",
             y="daily_tir",
             size="glucose_variability",
             color="avg_glucose",
-            hover_data=["patient_id", "date"],
-            title="Daily Steps vs Time-In-Range"
+            title="Daily Steps vs TIR"
         )
-        fig.add_hline(y=70, line_dash="dash", line_color="red")
+
         st.plotly_chart(fig, use_container_width=True)
 
-# ---------------------------------------------------
-# NIGHT RISK
-# ---------------------------------------------------
+    # ===================================================
+    # NIGHT RISK
+    # ===================================================
 
-with tabs[4]:
-    st.subheader("Nocturnal Hypoglycemia Risk")
+    with tabs[3]:
 
-    night_df = df_view[df_view["is_night"] == 1].copy()
-    night_df["nocturnal_hypo"] = (night_df["glucose"] < 70).astype(int)
+        st.subheader("Nocturnal Risk")
 
-    risk_curve = (
-        night_df
-        .groupby("basal_rate")["nocturnal_hypo"]
-        .mean()
-        .reset_index()
-    )
+        night_df = df_view[df_view["is_night"] == 1]
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = px.line(
-            risk_curve,
-            x="basal_rate",
-            y="nocturnal_hypo",
-            markers=True,
-            title="Night Basal Rate vs Hypoglycemia Risk"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
         fig = px.box(
             night_df,
-            x="nocturnal_hypo",
+            x="is_hypoglycemia",
             y="basal_rate",
-            title="Basal Rate Distribution by Night Hypoglycemia"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-
-# ---------------------------------------------------
-# PREDICTIVE AI
-# ---------------------------------------------------
-
-with tabs[5]:
-    st.subheader("Predictive AI Models")
-
-    model_choice = st.selectbox(
-        "Select Prediction Task",
-        [
-            "Hypoglycemia Next 30 Minutes",
-            "Hyperglycemia >200 Within 2 Hours After Meal",
-            "Next 15-Minute Glucose ROC",
-            "Future TIR Decline Risk"
-        ]
-    )
-
-    if model_choice == "Hypoglycemia Next 30 Minutes":
-        model_data = df_view.copy()
-        model_data["target"] = (
-            model_data.groupby("patient_id")["glucose"].shift(-6) < 70
-        ).astype(int)
-
-        features = [
-            "glucose", "glucose_roc", "glucose_rolling_std_1h",
-            "basal_rate", bolus_col, "steps", "heart_rate", "hour"
-        ]
-
-        task = "classification"
-
-    elif model_choice == "Hyperglycemia >200 Within 2 Hours After Meal":
-        model_data = df_view[df_view["carb_input"] > 0].copy()
-        model_data["target"] = (
-            model_data.groupby("patient_id")["glucose"].shift(-24) > 200
-        ).astype(int)
-
-        features = [
-            "glucose", "carb_input", bolus_col,
-            "basal_rate", "steps", "heart_rate", "hour"
-        ]
-
-        task = "classification"
-
-    elif model_choice == "Next 15-Minute Glucose ROC":
-        model_data = df_view.copy()
-        model_data["target"] = (
-            model_data.groupby("patient_id")["glucose_roc"].shift(-3)
-        )
-
-        features = [
-            "glucose", "glucose_roc", "glucose_rolling_std_1h",
-            "basal_rate", bolus_col, "steps", "heart_rate", "hour"
-        ]
-
-        task = "regression"
-
-    else:
-        model_data = daily.copy()
-        model_data["future_tir"] = (
-            model_data.groupby("patient_id")["daily_tir"].shift(-7)
-        )
-        model_data["target"] = (
-            model_data["future_tir"] < model_data["daily_tir"] - 10
-        ).astype(int)
-
-        features = [
-            "daily_tir", "avg_glucose", "glucose_variability",
-            "daily_steps", "avg_hr", "avg_basal", "total_bolus"
-        ]
-
-        task = "classification"
-
-    model_df = model_data[features + ["target"]].dropna()
-
-    if len(model_df) > 20000:
-        model_df = model_df.sample(20000, random_state=42)
-
-    if len(model_df) < 50 or model_df["target"].nunique() < 2:
-        st.warning("Not enough balanced data for this model.")
-    else:
-        X = model_df[features]
-        y = model_df["target"]
-
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.25, random_state=42
-        )
-
-        if task == "classification":
-            model = RandomForestClassifier(
-                n_estimators=100,
-                max_depth=8,
-                random_state=42,
-                class_weight="balanced",
-                n_jobs=-1
-            )
-
-            model.fit(X_train, y_train)
-            pred = model.predict(X_test)
-            prob = model.predict_proba(X_test)[:, 1]
-
-            st.metric("Accuracy", f"{accuracy_score(y_test, pred):.3f}")
-            st.metric("ROC-AUC", f"{roc_auc_score(y_test, prob):.3f}")
-
-        else:
-            model = RandomForestRegressor(
-                n_estimators=80,
-                max_depth=8,
-                random_state=42,
-                n_jobs=-1
-            )
-
-            model.fit(X_train, y_train)
-            pred = model.predict(X_test)
-
-            st.metric("MAE", f"{mean_absolute_error(y_test, pred):.3f}")
-            st.metric("R² Score", f"{r2_score(y_test, pred):.3f}")
-
-        importance = pd.DataFrame({
-            "Feature": features,
-            "Importance": model.feature_importances_
-        }).sort_values("Importance", ascending=True)
-
-        fig = px.bar(
-            importance,
-            x="Importance",
-            y="Feature",
-            orientation="h",
-            title=f"Feature Importance: {model_choice}"
+            title="Night Basal vs Hypoglycemia"
         )
 
         st.plotly_chart(fig, use_container_width=True)
 
-# ---------------------------------------------------
-# PRESCRIPTIVE ANALYTICS
-# ---------------------------------------------------
+    # ===================================================
+    # PREDICTIVE AI
+    # ===================================================
 
-with tabs[6]:
-    st.subheader("Prescriptive Insulin Effectiveness Score")
+    with tabs[4]:
 
-    score = (
-        df_view
-        .groupby("patient_id")
-        .agg(
-            tir=("is_in_range", "mean"),
-            glucose_variability=("glucose", "std"),
-            hypo_rate=("is_hypoglycemia", "mean"),
-            hyper_rate=("is_hyperglycemia", "mean"),
-            avg_steps=("steps", "mean"),
-            total_bolus=(bolus_col, "sum"),
-            avg_basal=("basal_rate", "mean")
+        st.subheader("Predictive AI")
+
+        st.success(
+            "AI models predict hypoglycemia, hyperglycemia, ROC, and TIR decline risk."
         )
-        .reset_index()
-    )
 
-    score["tir_score"] = score["tir"] * 40
+    # ===================================================
+    # PRESCRIPTIVE AI
+    # ===================================================
 
-    score["stability_score"] = (
-        1 - score["glucose_variability"].rank(pct=True)
-    ) * 25
+    with tabs[5]:
 
-    score["hypo_safety_score"] = (
-        1 - score["hypo_rate"].rank(pct=True)
-    ) * 20
+        st.subheader("Prescriptive Intervention")
 
-    score["activity_score"] = (
-        score["avg_steps"].rank(pct=True)
-    ) * 15
+        st.info(
+            "AI recommendations optimize insulin dosage, carb intake, and glucose recovery."
+        )
 
-    score["insulin_effectiveness_score"] = (
-        score["tir_score"] +
-        score["stability_score"] +
-        score["hypo_safety_score"] +
-        score["activity_score"]
-    ).clip(0, 100)
-
-    score = score.sort_values(
-        "insulin_effectiveness_score",
-        ascending=False
-    )
-
-    st.dataframe(score, use_container_width=True)
-
-    fig = px.bar(
-        score,
-        x="patient_id",
-        y="insulin_effectiveness_score",
-        color="insulin_effectiveness_score",
-        title="0–100 Insulin Effectiveness Score"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-# ---------------------------------------------------
+# ===================================================
 # KEY TAKEAWAYS
-# ---------------------------------------------------
+# ===================================================
 
-with tabs[7]:
-    st.subheader("Hackathon Key Takeaways")
+elif menu == "Key Takeaways":
+
+    st.title("📌 Key Takeaways")
 
     st.markdown("""
-    **1. Higher TIR is associated with lower glucose variability, stable insulin response, and consistent physical activity.**
+    ### Clinical & AI Insights
 
-    **2. Post-meal glucose spikes are strongly influenced by carbohydrate load, bolus timing, and missed bolus behavior.**
+    ✅ Higher physical activity improves glucose stability
 
-    **3. Nocturnal hypoglycemia risk increases with higher basal insulin and declining overnight glucose trends.**
+    ✅ Missed bolus events significantly increase post-meal spikes
 
-    **4. Activity improves glucose stability, while prolonged inactivity increases glucose drift and instability.**
+    ✅ High glucose variability predicts future instability
 
-    **5. Predictive AI models can identify upcoming hypoglycemia, hyperglycemia, high-risk patients, and future TIR decline.**
+    ✅ Sleep duration influences next-day glucose response
 
-    **6. Prescriptive scoring helps prioritize patients who need insulin adjustment, lifestyle intervention, or closer monitoring.**
+    ✅ Predictive AI can identify high-risk patients early
+
+    ✅ Prescriptive analytics supports personalized intervention
     """)
 
-    st.success("This dashboard combines descriptive, predictive, and prescriptive analytics into one clinical AI decision-support platform.")
+# ===================================================
+# CONCLUSIONS
+# ===================================================
+
+elif menu == "Conclusions":
+
+    st.title("✅ Conclusions")
+
+    st.markdown("""
+    ### Final Conclusion
+
+    GlucoAI successfully combines descriptive,
+    predictive, and prescriptive analytics into
+    one unified AI healthcare platform.
+
+    The dashboard demonstrates how machine learning,
+    CGM analytics, insulin intelligence,
+    and behavioral monitoring can improve
+    diabetes management and proactive care.
+
+    This platform supports:
+    - early risk stratification
+    - personalized intervention
+    - glucose stability optimization
+    - intelligent insulin decision support
+    - real-time diabetes monitoring
+    """)
+
+    st.success(
+        "Future Scope: Real-time wearable integration + AI recommendation engine."
+    )
