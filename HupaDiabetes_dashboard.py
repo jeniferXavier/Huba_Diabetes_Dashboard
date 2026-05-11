@@ -62,7 +62,7 @@ h1, h2, h3, h4 {
 @st.cache_data
 
 def load_data():
-    df = pd.read_csv("cleaned_hupa_diabetes_recent.csv")
+    df = pd.read_csv("cleaned_hupa_diabetes_recent1.xlsb")
     df['time'] = pd.to_datetime(df['time'])
     return df
 
