@@ -161,7 +161,29 @@ df_view = df[df["patient_id"].isin(selected_patients)].copy()
 if df_view.empty:
     st.warning("Please select at least one patient.")
     st.stop()
+# ---------------------------------------------------
+# DAILY SUMMARY
+# ---------------------------------------------------
 
+daily = (
+    df_view
+    .groupby(["patient_id", "date"])
+    .agg(
+        daily_tir=("is_in_range", "mean"),
+        avg_glucose=("glucose", "mean"),
+        glucose_variability=("glucose", "std"),
+        daily_steps=("steps", "sum"),
+        avg_hr=("heart_rate", "mean"),
+        avg_basal=("basal_rate", "mean"),
+        total_bolus=(bolus_col, "sum"),
+        total_carbs=("carb_input", "sum"),
+        hypo_rate=("is_hypoglycemia", "mean"),
+        hyper_rate=("is_hyperglycemia", "mean")
+    )
+    .reset_index()
+)
+
+daily["daily_tir"] *= 100
 # ===================================================
 # INTRODUCTION PAGE
 # ===================================================
