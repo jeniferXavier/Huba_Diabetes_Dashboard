@@ -110,10 +110,7 @@ def load_data():
     df = pd.read_excel("cleaned_hupa_diabetes_recent1.xlsb")
     demo = pd.read_csv("cleaned_demographics.csv")
     df["time"] = pd.to_datetime(df["time"], unit="s")
-    df = df[
-        (df["time"].dt.year >= 2018) &
-        (df["time"].dt.year <= 2022)
-    ]
+    
     if "patient_id" in demo.columns:
         df = df.merge(demo, on="patient_id", how="left")
 
