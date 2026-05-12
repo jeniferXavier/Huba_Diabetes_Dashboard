@@ -27,7 +27,7 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(180deg, #4A8FCC, #6BB0F0);
+    background: linear-gradient(180deg, #f8fbff 0%, #eef6ff 100%);
 }
 
 .block-container {
@@ -39,7 +39,7 @@ st.markdown("""
     width: 320px;
     min-width: 320px;
     max-width: 320px;
-    background: linear-gradient(180deg, #4A8FCC, #6BB0F0);
+    background: linear-gradient(180deg,#0B1F3A 0%, #102B50 100%);
     padding-top: 0rem;
 }
 
