@@ -49,7 +49,7 @@ st.markdown("""
 
 /* SIDEBAR BUTTON FULL WIDTH */
 section[data-testid="stSidebar"] div.stButton > button {
-    width: 100%;
+    width: 240px;
     height: 55px;
     border-radius: 14px;
     background-color: #112D4E;
@@ -72,7 +72,7 @@ section[data-testid="stSidebar"] div.stButton > button:hover {
 
 /* REMOVE EXTRA SPACE */
 section[data-testid="stSidebar"] {
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 
