@@ -128,8 +128,6 @@ df = load_data()
 
 df = df.dropna(subset=["patient_id", "time", "glucose"])
 
-
-
 bolus_col = "bolus_volume_delivered" if "bolus_volume_delivered" in df.columns else "bolus"
 
 for col in ["steps", "heart_rate", "basal_rate", "carb_input", bolus_col]:
@@ -406,7 +404,7 @@ elif menu == "Insights":
                     TBR=("is_hypoglycemia", "mean"),
                     TIR=("is_in_range", "mean"),
                     TAR=("is_hyperglycemia", "mean")
-                ) * 100
+                ) * 100.round(2)
             ).reset_index()
 
             tir_melt = tir_summary.melt(
