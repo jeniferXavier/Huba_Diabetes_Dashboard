@@ -822,16 +822,11 @@ elif menu == "Key Takeaways":
     st.markdown("""
     <div class='insight-box'>
     <b>Key Clinical Findings:</b><br><br>
-        ✅ Higher physical activity improves glucose stability
-    
-        ✅ Missed bolus events significantly increase post-meal spikes
-    
-        ✅ High glucose variability predicts future instability
-    
-        ✅ Sleep duration influences next-day glucose response
-    
-        ✅ Predictive AI can identify high-risk patients early
-    
+        ✅ Higher physical activity improves glucose stability<br/><br/>
+        ✅ Missed bolus events significantly increase post-meal spikes<br><br>
+        ✅ High glucose variability predicts future instability<br><br>
+        ✅ Sleep duration influences next-day glucose response<br><br>
+        ✅ Predictive AI can identify high-risk patients early<br><br>
         ✅ Prescriptive analytics supports personalized intervention
     </div>
     """, unsafe_allow_html=True)
