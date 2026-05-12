@@ -123,7 +123,6 @@ df = load_data()
 # ---------------------------------------------------
 
 df = df.dropna(subset=["patient_id", "time", "glucose"])
-df = df.sort_values(["patient_id", "time"])
 df = df[
     (df["time"].dt.year >= 2018) &
     (df["time"].dt.year <= 2022)
