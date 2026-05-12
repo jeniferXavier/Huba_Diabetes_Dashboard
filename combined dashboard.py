@@ -382,8 +382,7 @@ elif menu == "Insights":
         df_view['time'] = pd.to_datetime(df_view['time'], errors='coerce')
 
         # 2. DROP MISTAKES: Remove rows that couldn't be converted (the 1969/1970 glitches)
-        df_view = df_view.dropna(subset=['time']))
-
+        df_view = df_view.dropna(subset=['time'])
         
         fig = px.line(
             df_view,
