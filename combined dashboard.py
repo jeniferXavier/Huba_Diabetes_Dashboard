@@ -195,11 +195,6 @@ if st.sidebar.button("✅ Conclusions"):
 
 menu = st.session_state.menu
 
-
-# ---------------------------------------------------
-# PATIENT FILTER
-# ---------------------------------------------------
-
 # ---------------------------------------------------
 # PATIENT FILTER - SINGLE SELECT DROPDOWN
 # ---------------------------------------------------
@@ -253,16 +248,7 @@ daily["daily_tir"] *= 100
 
 if menu == "Introduction":
 
-    
-
-   
-
-    st.markdown("""
-        <div style="text-align:center;">
-            <img src="Assets/Introduction.png">
-        </div>
-""", unsafe_allow_html=True)
-
+  st.image("Assets/Introduction.png", use_container_width=True)
 # ===================================================
 # OVERVIEW PAGE
 # ===================================================
