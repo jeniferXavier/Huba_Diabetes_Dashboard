@@ -70,10 +70,7 @@ section[data-testid="stSidebar"] div.stButton > button:hover {
     transform: translateX(3px);
 }
 
-/* REMOVE EXTRA SPACE */
-section[data-testid="stSidebar"] {
-    padding-top: 5px;
-}
+
 
 
 """, unsafe_allow_html=True)
