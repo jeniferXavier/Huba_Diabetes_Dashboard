@@ -834,7 +834,7 @@ elif menu == "Key Takeaways":
     
         ✅ Prescriptive analytics supports personalized intervention
     </div>
-    """)
+    """, unsafe_allow_html=True)
 
 # ===================================================
 # CONCLUSIONS
