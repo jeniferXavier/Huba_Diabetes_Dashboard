@@ -304,7 +304,7 @@ elif menu == "Data Cleaning":
             "Hypoglycemia classification",
             "Daily glucose control",
             "Meal response monitoring",
-            "AI intervention prioritization"
+            "Intervention prioritization"
         ]
     })
 
@@ -329,14 +329,14 @@ elif menu == "Insights":
     hyper = df_view["is_hyperglycemia"].mean() * 100
     avg_glucose = df_view["glucose"].mean()
 
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1, c2, c3, c4 = st.columns(6)
 
     #c1.metric("👥 Patients", total_patients)
     #c2.metric("📊 Records", f"{total_records:,}")
-    c3.metric("✅ TIR", f"{tir:.1f}%")
-    c4.metric("⚠️ Hypo", f"{hypo:.1f}%")
-    c5.metric("🔥 Hyper", f"{hyper:.1f}%")
-    c6.metric("🩸 Avg Glucose", f"{avg_glucose:.1f}")
+    c1.metric("✅ TIR", f"{tir:.1f}%")
+    c2.metric("⚠️ Hypo", f"{hypo:.1f}%")
+    c3.metric("🔥 Hyper", f"{hyper:.1f}%")
+    c4.metric("🩸 Avg Glucose", f"{avg_glucose:.1f}")
 
  
     # ---------------------------------------------------
@@ -355,23 +355,48 @@ elif menu == "Insights":
 
    
 # ---------------------------------------------------
-# HOME
+# Demographics
 # ---------------------------------------------------
 
     with tabs[0]:
 
-        st.markdown("""
-        **GlucoAI** combines CGM, insulin, meals, activity, heart rate, sleep, and demographic signals to support diabetes intelligence.
+         col1, col2 = st.columns(2)
 
-        This dashboard includes:
-        - Descriptive analytics: TIR, hypoglycemia, glucose trends
-        - Predictive analytics: hypo prediction, hyperglycemia prediction, ROC forecasting
-        - Prescriptive analytics: insulin effectiveness score, basal risk, carb guidance
-        - Patient stratification and risk monitoring
-        """)
-
-        st.success("Goal: Improve diabetes safety, reduce glucose instability, and support personalized intervention decisions.")
-
+        if 'gender' in df.columns:
+    
+            fig = px.pie(
+                df,
+                names='gender',
+                template='plotly_white'
+            )
+    
+            with col1:
+                st.plotly_chart(fig, use_container_width=True)
+    
+        if 'age' in df.columns:
+    
+            fig = px.histogram(
+                df,
+                x='age',
+                nbins=20,
+                template='plotly_white'
+            )
+    
+            with col2:
+                st.plotly_chart(fig, use_container_width=True)
+    
+        overview_chart = px.line(
+            df,
+            x='time',
+            y='glucose',
+            color='patient_id',
+            template='plotly_white'
+        )
+    
+        chart_container(
+            "📊 Overall Glucose Trends Across Patients",
+            overview_chart
+        )
 # ---------------------------------------------------
 # GLUCOSE OVERVIEW
 # ---------------------------------------------------
