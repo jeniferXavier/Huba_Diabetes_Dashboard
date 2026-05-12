@@ -50,6 +50,10 @@ st.markdown("""
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
+[data-testid="stMarkdownContainer"] p {
+    color: white;
+}
+
 /* SIDEBAR BUTTON FULL WIDTH */
 section[data-testid="stSidebar"] div.stButton > button {
     width: 240px;
@@ -110,7 +114,24 @@ section[data-testid="stSidebar"] {
     border-radius: 8px !important;
     font-weight: 600;
 }
+/* Remove blue circle/icon in multiselect */
+[data-baseweb="tag"] svg {
+    display: none !important;
+}
 
+/* Remove extra avatar/icon space */
+[data-baseweb="tag"] > div:first-child {
+    display: none !important;
+}
+
+/* Clean selected tag styling */
+[data-baseweb="tag"] {
+    background-color: #FF5757 !important;
+    color: white !important;
+    border-radius: 10px !important;
+    padding: 4px 10px !important;
+    font-weight: 600 !important;
+}
 /* Dropdown background */
 [data-baseweb="popover"] {
     background-color: #102B4E !important;
