@@ -91,6 +91,7 @@ section[data-testid="stSidebar"] {
     background: #0B2447;
     padding-top: 0px;
     padding-bottom: 10px;
+    background: transparent !important;   /* remove dark box */
 }
 
 /* Search input box */
@@ -163,19 +164,19 @@ section[data-testid="stSidebar"] {
 # HEADER
 # ---------------------------------------------------
 
-st.markdown("""
-<div style="
-    background:linear-gradient(90deg,#0f766e,#2563eb);
-    padding:35px;
-    border-radius:25px;
-    color:white;">
-<h1>🩺 GlucoAI Diabetes Intelligence Platform</h1>
-<h4>Predictive + Prescriptive Analytics for CGM, Insulin, Meals, Activity, Sleep & Risk Forecasting</h4>
-<p>This platform integrates Continuous Glucose Monitoring (CGM),
-    insulin delivery, meal behavior, activity, sleep, and
-    cardiovascular signals into a unified clinical intelligence dashboard.</p>
-</div>
-""", unsafe_allow_html=True)
+#st.markdown("""
+#<div style="
+#    background:linear-gradient(90deg,#0f766e,#2563eb);
+ #   padding:35px;
+ #   border-radius:25px;
+ #   color:white;">
+#<h1>🩺 GlucoAI Diabetes Intelligence Platform</h1>
+#<h4>Predictive + Prescriptive Analytics for CGM, Insulin, Meals, Activity, Sleep & Risk Forecasting</h4>
+#<p>This platform integrates Continuous Glucose Monitoring (CGM),
+ #   insulin delivery, meal behavior, activity, sleep, and
+ #   cardiovascular signals into a unified clinical intelligence dashboard.</p>
+#</div>
+#""", unsafe_allow_html=True)
 
 # ---------------------------------------------------
 # LOAD DATA
