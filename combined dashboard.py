@@ -259,7 +259,7 @@ if menu == "Introduction":
 
     st.markdown("""
         <div style="text-align:center;">
-            <img src="/Assets/Introduction.png">
+            <img src="Assets/Introduction.png">
         </div>
 """, unsafe_allow_html=True)
 
