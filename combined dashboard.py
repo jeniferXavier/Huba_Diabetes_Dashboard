@@ -38,7 +38,29 @@ st.markdown("""
     border-radius: 18px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
-</style>
+
+/* Target all buttons within the sidebar container */
+    section[data-testid="stSidebar"] .stButton button {
+        width: 100%;
+        border-radius: 10px;
+        height: 3em;
+        background-color: white;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+        display: flex;
+        justify-content: flex-start; /* Align text/icon to the left */
+        padding-left: 20px;
+    }
+    
+    /* Optional: Add a hover effect to make it feel like a real menu */
+    section[data-testid="stSidebar"] .stButton button:hover {
+        border-color: #636EFA;
+        color: #636EFA;
+        background-color: #f0f2f6;
+    }
+   
+
+
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------
