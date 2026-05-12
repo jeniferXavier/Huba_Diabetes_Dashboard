@@ -379,8 +379,10 @@ elif menu == "Insights":
 
     with tabs[1]:
         st.subheader("Glucose Monitoring Overview")
-        df_view['time'] = pd.to_datetime(df['time'], errors='coerce')
-        hourly_glucose = df.groupby("hour")["glucose"].mean().reset_index()
+        df_view['time'] = pd.to_datetime(df_view['time'], errors='coerce')
+
+        # 2. DROP MISTAKES: Remove rows that couldn't be converted (the 1969/1970 glitches)
+        df_view = df_view.dropna(subset=['time']))
 
         
         fig = px.line(
