@@ -57,7 +57,7 @@ section[data-testid="stSidebar"] div.stButton > button {
     border: 1px solid #1E4D7A;
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-align: left;
     padding-left: 18px;
     transition: 0.3s;
@@ -72,7 +72,7 @@ section[data-testid="stSidebar"] div.stButton > button:hover {
 
 /* REMOVE EXTRA SPACE */
 section[data-testid="stSidebar"] {
-    padding-top: 10px;
+    padding-top: 5px;
 }
 
 
