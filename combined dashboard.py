@@ -121,9 +121,7 @@ def load_data():
     return df
 
 df = load_data()
-st.write(df["time"].sample(20))
-st.write(df["time"].min())
-st.write(df["time"].max())
+
 # ---------------------------------------------------
 # COLUMN SAFETY
 # ---------------------------------------------------
@@ -385,27 +383,17 @@ elif menu == "Insights":
 
     with tabs[1]:
         st.subheader("Glucose Monitoring Overview")
-        glucose_hourly = (
-        df.groupby(df["time"].dt.hour)["glucose"]
-        .mean()
-        .reset_index()
-        )
-        glucose_hourly.columns = ["Hour", "Average Glucose"]
-
         fig = px.line(
-        glucose_hourly,
-        x="Hour",
-        y="Average Glucose",
-        markers=True,
-        title="24-Hour Average Glucose Trend",
-        template="plotly_white"
+            df_view,
+            x="time",
+            y="glucose",
+            color="patient_id",
+            title="24-Hour / Longitudinal Glucose Trend"
         )
 
-        fig.update_layout(
-            xaxis_title="Hour of Day",
-            yaxis_title="Average Glucose (mg/dL)",
-            height=500
-        )
+        fig.add_hline(y=70, line_dash="dash", line_color="red")
+        fig.add_hline(y=180, line_dash="dash", line_color="red")
+
         st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
