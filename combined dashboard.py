@@ -26,11 +26,58 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Sidebar container */
+.stApp {
+    background: linear-gradient(180deg, #4A8FCC, #6BB0F0);
+}
+
+.block-container {
+    padding-top: 1 rem;
+}
+
+/* SIDEBAR WIDTH */
 [data-testid="stSidebar"] {
-    background: background: linear-gradient(180deg, #4A8FCC, #6BB0F0);
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
+    background: linear-gradient(180deg, #4A8FCC, #6BB0F0);
     padding-top: 0rem;
 }
+
+[data-testid="stMetric"] {
+    background: white;
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+/* SIDEBAR BUTTON FULL WIDTH */
+section[data-testid="stSidebar"] div.stButton > button {
+    width: 240px;
+    height: 55px;
+    border-radius: 14px;
+    background-color: #112D4E;
+    color: white;
+    border: 1px solid #1E4D7A;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-align: left;
+    padding-left: 18px;
+    transition: 0.3s;
+}
+
+/* HOVER EFFECT */
+section[data-testid="stSidebar"] div.stButton > button:hover {
+    background-color: #1B4F8C;
+    border: 1px solid #4FC3F7;
+    transform: translateX(3px);
+}
+
+/* REMOVE EXTRA SPACE */
+section[data-testid="stSidebar"] {
+    padding-top: 5px;
+}
+
 
 /* Push multiselect/search to top */
 [data-testid="stSidebar"] .stMultiSelect {
