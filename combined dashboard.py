@@ -742,7 +742,7 @@ elif menu == "Insights":
                 total_bolus=(bolus_col, "sum"),
                 avg_basal=("basal_rate", "mean")
             )
-            .reset_index()
+            .reset_index().round(2)
         )
     
         score["tir_score"] = score["tir"] * 40
