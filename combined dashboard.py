@@ -384,14 +384,29 @@ elif menu == "Insights":
         # 2. DROP MISTAKES: Remove rows that couldn't be converted (the 1969/1970 glitches)
         df_view = df_view.dropna(subset=['time'])
         
+       # fig = px.line(
+         #   df_view,
+         #   x="time",
+          #  y="glucose",
+          #  color="patient_id",
+          #  title="24-Hour / Longitudinal Glucose Trend"
+      #  )
+        hourly_glucose = df.groupby("hour")["glucose"].mean().reset_index()
+        
         fig = px.line(
-            df_view,
-            x="time",
+            hourly_glucose,
+            x="hour",
             y="glucose",
-            color="patient_id",
-            title="24-Hour / Longitudinal Glucose Trend"
+            markers=True,
+            color_discrete_sequence=["#E63946"],
+            title="24-Hour Glycemic Trend"
         )
-
+        
+        fig.update_layout(
+            xaxis_title="Hour of Day",
+            yaxis_title="Average Glucose (mg/dL)",
+            hovermode="x unified"
+        )
         fig.add_hline(y=70, line_dash="dash", line_color="red")
         fig.add_hline(y=180, line_dash="dash", line_color="red")
 
