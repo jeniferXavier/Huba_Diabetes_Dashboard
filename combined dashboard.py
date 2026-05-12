@@ -391,6 +391,11 @@ elif menu == "Insights":
             color="patient_id",
             title="24-Hour / Longitudinal Glucose Trend"
         )
+
+        fig.update_xaxes(
+            tickformat="%Y-%m-%d\n%H:%M", # Shows Year-Month-Day and Hour:Minute
+            dtick="auto"
+        )
         
         fig.add_hline(y=70, line_dash="dash", line_color="red")
         fig.add_hline(y=180, line_dash="dash", line_color="red")
