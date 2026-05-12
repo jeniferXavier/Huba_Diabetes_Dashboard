@@ -799,8 +799,8 @@ elif menu == "Key Takeaways":
         ✅ Higher physical activity improves glucose stability<br/><br/>
         ✅ Missed bolus events significantly increase post-meal spikes<br><br>
         ✅ High glucose variability predicts future instability<br><br>
-        ✅ Sleep duration influences next-day glucose response<br><br>
-        ✅ Predictive AI can identify high-risk patients early<br><br>
+        ✅ Sleep duration between 7–8 hours improves Time-In-Range.<br><br>
+        ✅ Predictive alerts enable proactive intervention and reduce severe hypoglycemia risk.<br><br>
         ✅ Prescriptive analytics supports personalized intervention
     </div>
     """, unsafe_allow_html=True)
