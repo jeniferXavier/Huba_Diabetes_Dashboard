@@ -361,29 +361,34 @@ elif menu == "Insights":
     with tabs[0]:
 
          col1, col2 = st.columns(2)
-
-        if 'gender' in df.columns:
-    
-            fig = px.pie(
-                df,
-                names='gender',
-                template='plotly_white'
-            )
-    
             with col1:
-                st.plotly_chart(fig, use_container_width=True)
+                 if 'gender' in df.columns:
     
-        if 'age' in df.columns:
-    
-            fig = px.histogram(
-                df,
-                x='age',
-                nbins=20,
-                template='plotly_white'
-            )
+                gender_chart = px.pie(
+                    df,
+                    names='gender',
+                    title='Gender Distribution'
+                )
+        
+                st.plotly_chart(
+                    gender_chart,
+                    use_container_width=True
+                )
     
             with col2:
-                st.plotly_chart(fig, use_container_width=True)
+                if 'age' in df.columns:
+
+                age_chart = px.histogram(
+                    df,
+                    x='age',
+                    nbins=20,
+                    title='Age Distribution'
+                )
+        
+                st.plotly_chart(
+                    age_chart,
+                    use_container_width=True
+                )
     
         overview_chart = px.line(
             df,
