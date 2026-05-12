@@ -104,7 +104,7 @@ section[data-testid="stSidebar"] {
 # ---------------------------------------------------
 # LOAD DATA
 # ---------------------------------------------------
-st.cache_data.clear()
+
 @st.cache_data
 def load_data():
     df = pd.read_excel("cleaned_hupa_diabetes_recent1.xlsb")
