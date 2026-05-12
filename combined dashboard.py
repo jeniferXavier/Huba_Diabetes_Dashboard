@@ -109,8 +109,12 @@ section[data-testid="stSidebar"] {
 def load_data():
     df = pd.read_excel("cleaned_hupa_diabetes_recent1.xlsb")
     demo = pd.read_csv("cleaned_demographics.csv")
-   
-    df["time"] = pd.to_datetime(df["time"], unit="ms")
+    df["time"] = pd.to_datetime(
+     df["time"],
+     unit="D",
+     origin="1899-12-30"
+    )
+    # df["time"] = pd.to_datetime(df["time"], unit="ms")
     if "patient_id" in demo.columns:
         df = df.merge(demo, on="patient_id", how="left")
 
