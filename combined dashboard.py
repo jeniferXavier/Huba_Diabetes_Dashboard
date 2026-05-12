@@ -83,79 +83,14 @@ section[data-testid="stSidebar"] {
 }
 
 
-/* Push multiselect/search to top */
-[data-testid="stSidebar"] .stMultiSelect {
+/* Single select dropdown styling */
+[data-testid="stSidebar"] .stSelectbox {
     position: sticky;
     top: 10px;
     z-index: 999;
-    background: #0B2447;
-    padding-top: 0px;
+    background: transparent !important;
     padding-bottom: 10px;
-    background: transparent !important;   /* remove dark box */
 }
-
-/* Search input box */
-[data-testid="stSidebar"] input {
-    background-color: #102B4E !important;
-    color: white !important;
-    border-radius: 10px !important;
-    border: 1px solid #1F5C99 !important;
-    padding: 10px !important;
-}
-
-/* Placeholder text */
-[data-testid="stSidebar"] input::placeholder {
-    color: #AFCBFF !important;
-}
-
-/* Selected patient tags */
-.stMultiSelect [data-baseweb="tag"] {
-    background-color: #FF5757 !important;
-    color: white !important;
-    border-radius: 8px !important;
-    font-weight: 600;
-}
-/* Remove blue circle/icon in multiselect */
-[data-baseweb="tag"] svg {
-    display: none !important;
-}
-
-/* Remove extra avatar/icon space */
-[data-baseweb="tag"] > div:first-child {
-    display: none !important;
-}
-
-/* Clean selected tag styling */
-[data-baseweb="tag"] {
-    background-color: #FF5757 !important;
-    color: white !important;
-    border-radius: 10px !important;
-    padding: 4px 10px !important;
-    font-weight: 600 !important;
-}
-/* Dropdown background */
-[data-baseweb="popover"] {
-    background-color: #102B4E !important;
-    border-radius: 12px !important;
-}
-
-/* Dropdown options */
-[data-baseweb="menu"] div {
-    color: white !important;
-    background-color: #102B4E !important;
-}
-
-/* Hover effect */
-[data-baseweb="menu"] div:hover {
-    background-color: #1F5C99 !important;
-}
-
-/* Remove extra spacing */
-.css-1d391kg {
-    padding-top: 0rem !important;
-}
-
-
 
 
 """, unsafe_allow_html=True)
@@ -262,24 +197,29 @@ if st.sidebar.button("✅ Conclusions"):
 
 menu = st.session_state.menu
 
+
 # ---------------------------------------------------
 # PATIENT FILTER
+# ---------------------------------------------------
+
+# ---------------------------------------------------
+# PATIENT FILTER - SINGLE SELECT DROPDOWN
 # ---------------------------------------------------
 
 st.sidebar.markdown("---")
 
 patients = sorted(df["patient_id"].unique())
 
-selected_patients = st.sidebar.multiselect(
-    "Select Patients",
+selected_patient = st.sidebar.selectbox(
+    "Select Patient",
     patients,
-    default=patients[:5]
+    index=0
 )
 
-df_view = df[df["patient_id"].isin(selected_patients)].copy()
+df_view = df[df["patient_id"] == selected_patient].copy()
 
 if df_view.empty:
-    st.warning("Please select at least one patient.")
+    st.warning("Please select a patient.")
     st.stop()
 # ---------------------------------------------------
 # DAILY SUMMARY
