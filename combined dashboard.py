@@ -612,19 +612,18 @@ elif menu == "Insights":
             st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------
-# PREDICTIVE AI
+# PREDICTIVE 
 # ---------------------------------------------------
 
     with tabs[5]:
-        st.subheader("Predictive AI Models")
+        st.subheader("Predictive Models")
     
         model_choice = st.selectbox(
             "Select Prediction Task",
             [
                 "Hypoglycemia Next 30 Minutes",
                 "Hyperglycemia >200 Within 2 Hours After Meal",
-                "Next 15-Minute Glucose ROC",
-                "Future TIR Decline Risk"
+                "Next 15-Minute Glucose ROC"
             ]
         )
     
