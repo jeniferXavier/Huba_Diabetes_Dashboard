@@ -562,7 +562,7 @@ elif menu == "Insights":
         st.subheader("Nocturnal Hypoglycemia Risk")
     
         night_df = df_view[df_view["is_night"] == 1].copy()
-        night_df["nocturnal_hypo"] = (night_df["glucose"] < 70).astype(int)
+        night_df["nocturnal_hypo"] = (night_df["glucose"] < 70).astype(int).round(2)
     
         risk_curve = (
             night_df
