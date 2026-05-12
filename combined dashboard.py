@@ -379,27 +379,22 @@ elif menu == "Insights":
 
     with tabs[1]:
         st.subheader("Glucose Monitoring Overview")
-        df_view['time'] = pd.to_datetime(df_view['time'], errors='coerce')
+        hourly_glucose = df.groupby("hour")["glucose"].mean().reset_index()
 
-        # 2. DROP MISTAKES: Remove rows that couldn't be converted (the 1969/1970 glitches)
-        df_view = df_view.dropna(subset=['time'])
-        
         fig = px.line(
-            df_view,
-            x="time",
+            hourly_glucose,
+            x="hour",
             y="glucose",
-            color="patient_id",
-            title="24-Hour / Longitudinal Glucose Trend"
-        )
-
-        fig.update_xaxes(
-            tickformat="%Y-%m-%d\n%H:%M", # Shows Year-Month-Day and Hour:Minute
-            dtick="auto"
+            markers=True,
+            color_discrete_sequence=["#E63946"],
+            title="24-Hour Glycemic Trend"
         )
         
-        fig.add_hline(y=70, line_dash="dash", line_color="red")
-        fig.add_hline(y=180, line_dash="dash", line_color="red")
-
+        fig.update_layout(
+            xaxis_title="Hour of Day",
+            yaxis_title="Average Glucose (mg/dL)",
+            hovermode="x unified"
+        )
         st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
