@@ -357,7 +357,6 @@ elif menu == "Insights":
 # ---------------------------------------------------
 
     with tabs[0]:
-        st.subheader("Project Overview")
 
         st.markdown("""
         **GlucoAI** combines CGM, insulin, meals, activity, heart rate, sleep, and demographic signals to support diabetes intelligence.
