@@ -109,8 +109,7 @@ section[data-testid="stSidebar"] {
 def load_data():
     df = pd.read_excel("cleaned_hupa_diabetes_recent1.xlsb")
     demo = pd.read_csv("cleaned_demographics.csv")
-
-    df["time"] = pd.to_datetime(df["time"], errors="coerce")
+    df["time"] = pd.to_datetime(df["time"], unit="s")
 
     if "patient_id" in demo.columns:
         df = df.merge(demo, on="patient_id", how="left")
@@ -129,6 +128,8 @@ df = df[
     (df["time"].dt.year >= 2018) &
     (df["time"].dt.year <= 2022)
 ]
+df = df.sort_values(["patient_id", "time"])
+
 bolus_col = "bolus_volume_delivered" if "bolus_volume_delivered" in df.columns else "bolus"
 
 for col in ["steps", "heart_rate", "basal_rate", "carb_input", bolus_col]:
@@ -382,17 +383,27 @@ elif menu == "Insights":
 
     with tabs[1]:
         st.subheader("Glucose Monitoring Overview")
-        fig = px.line(
-            df_view,
-            x="time",
-            y="glucose",
-            color="patient_id",
-            title="24-Hour / Longitudinal Glucose Trend"
+        glucose_hourly = (
+        df.groupby(df["time"].dt.hour)["glucose"]
+        .mean()
+        .reset_index()
         )
-        
-        fig.add_hline(y=70, line_dash="dash", line_color="red")
-        fig.add_hline(y=180, line_dash="dash", line_color="red")
+        glucose_hourly.columns = ["Hour", "Average Glucose"]
 
+        fig = px.line(
+        glucose_hourly,
+        x="Hour",
+        y="Average Glucose",
+        markers=True,
+        title="24-Hour Average Glucose Trend",
+        template="plotly_white"
+        )
+
+        fig.update_layout(
+            xaxis_title="Hour of Day",
+            yaxis_title="Average Glucose (mg/dL)",
+            height=500
+        )
         st.plotly_chart(fig, use_container_width=True)
 
         col1, col2 = st.columns(2)
