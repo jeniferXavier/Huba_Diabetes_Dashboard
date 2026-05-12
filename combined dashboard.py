@@ -1,5 +1,4 @@
 # app.py
-# GlucoAI: Hackathon-Winning Diabetes Dashboard
 
 import streamlit as st
 import pandas as pd
@@ -383,19 +382,7 @@ elif menu == "Insights":
         df_view['time'] = pd.to_datetime(df['time'])
         hourly_glucose = df.groupby("hour")["glucose"].mean().reset_index()
 
-        fig = px.line(
-            hourly_glucose,
-            x="hour",
-            y="glucose",
-            markers=True,
-            title="24-Hour / Longitudinal Glucose Trend"
-        )
         
-        fig.update_layout(
-            xaxis_title="Hour of Day",
-            yaxis_title="Average Glucose (mg/dL)",
-            hovermode="x unified"
-        )
         fig = px.line(
             df_view,
             x="time",
