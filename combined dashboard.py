@@ -377,7 +377,7 @@ elif menu == "Insights":
     
             with col2:
                 if 'age' in df.columns:
-
+    
                 age_chart = px.histogram(
                     df,
                     x='age',
@@ -390,18 +390,7 @@ elif menu == "Insights":
                     use_container_width=True
                 )
     
-        overview_chart = px.line(
-            df,
-            x='time',
-            y='glucose',
-            color='patient_id',
-            template='plotly_white'
-        )
-    
-        chart_container(
-            "📊 Overall Glucose Trends Across Patients",
-            overview_chart
-        )
+        
 # ---------------------------------------------------
 # GLUCOSE OVERVIEW
 # ---------------------------------------------------
