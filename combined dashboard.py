@@ -398,17 +398,11 @@ elif menu == "Insights":
             x="hour",
             y="glucose",
             markers=True,
-            color_discrete_sequence=["#E63946"],
             title="24-Hour Glycemic Trend"
         )
         
-        fig.update_layout(
-            xaxis_title="Hour of Day",
-            yaxis_title="Average Glucose (mg/dL)",
-            hovermode="x unified"
-        )
-        fig.add_hline(y=70, line_dash="dash", line_color="red")
-        fig.add_hline(y=180, line_dash="dash", line_color="red")
+        #fig.add_hline(y=70, line_dash="dash", line_color="red")
+        #fig.add_hline(y=180, line_dash="dash", line_color="red")
 
         st.plotly_chart(fig, use_container_width=True)
 
