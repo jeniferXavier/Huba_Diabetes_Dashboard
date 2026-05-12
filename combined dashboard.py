@@ -843,7 +843,7 @@ elif menu == "Conclusions":
         <b>Key Final Conclusion</b><br>
         This dashboard successfully combines descriptive,predictive, and prescriptive analytics into one unified healthcare platform.<br>
         The dashboard demonstrates how machine learning,CGM analytics, insulin intelligence,and behavioral monitoring can improve diabetes management and proactive care.<br/>
-        This platform supports:
+        This platform supports:<br>
         - early risk stratification<br>
         - personalized intervention<br>
         - glucose stability optimization<br>
