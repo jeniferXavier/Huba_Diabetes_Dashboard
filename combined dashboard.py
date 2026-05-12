@@ -341,14 +341,14 @@ elif menu == "Data Cleaning":
 
 elif menu == "Insights":
 
-    st.title("📊 AI Diabetes Insights Dashboard")
+    st.title("📊 Diabetes Insights Dashboard")
 
     # ---------------------------------------------------
     # KPI ROW
     # ---------------------------------------------------
 
-    total_patients = df_view["patient_id"].nunique()
-    total_records = len(df_view)
+    #total_patients = df_view["patient_id"].nunique()
+    #total_records = len(df_view)
     tir = df_view["is_in_range"].mean() * 100
     hypo = df_view["is_hypoglycemia"].mean() * 100
     hyper = df_view["is_hyperglycemia"].mean() * 100
@@ -356,8 +356,8 @@ elif menu == "Insights":
 
     c1, c2, c3, c4, c5, c6 = st.columns(6)
 
-    c1.metric("👥 Patients", total_patients)
-    c2.metric("📊 Records", f"{total_records:,}")
+    #c1.metric("👥 Patients", total_patients)
+    #c2.metric("📊 Records", f"{total_records:,}")
     c3.metric("✅ TIR", f"{tir:.1f}%")
     c4.metric("⚠️ Hypo", f"{hypo:.1f}%")
     c5.metric("🔥 Hyper", f"{hyper:.1f}%")
@@ -369,12 +369,12 @@ elif menu == "Insights":
     # ---------------------------------------------------
     
     tabs = st.tabs([
-        "🏠 Home",
+        "👥 Demographics",
         "📊 Glucose Overview",
         "🍽️ Meal + Insulin",
         "🏃 Activity + Sleep",
         "🌙 Night Risk",
-        "🤖 Predictive AI",
+        "🤖 Predictive",
         "💊 Prescriptive Analytics"
     ])
 
