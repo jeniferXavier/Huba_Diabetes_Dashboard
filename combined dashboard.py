@@ -329,7 +329,7 @@ elif menu == "Insights":
     hyper = df_view["is_hyperglycemia"].mean() * 100
     avg_glucose = df_view["glucose"].mean()
 
-    c1, c2, c3, c4 = st.columns(6)
+    c1, c2, c3, c4 = st.columns(4)
 
     #c1.metric("👥 Patients", total_patients)
     #c2.metric("📊 Records", f"{total_records:,}")
