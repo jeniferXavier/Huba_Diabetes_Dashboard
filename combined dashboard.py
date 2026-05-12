@@ -255,20 +255,13 @@ if menu == "Introduction":
 
     
 
-    st.markdown("## 🎯 Project Objectives")
+   
 
     st.markdown("""
-    - Predict hypoglycemia and hyperglycemia risks
-    - Improve Time-In-Range (TIR)
-    - Detect glucose instability early
-    - Optimize insulin effectiveness
-    - Support personalized diabetes intervention
-    - Enable AI-driven clinical decision support
-    """)
-
-    st.success(
-        "Hackathon Goal: Build an intelligent diabetes monitoring and intervention platform."
-    )
+        <div style="text-align:center;">
+            <img src="/Assets/Introduction.png">
+        </div>
+""", unsafe_allow_html=True)
 
 # ===================================================
 # OVERVIEW PAGE
