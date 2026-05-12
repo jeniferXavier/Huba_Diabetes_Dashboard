@@ -39,26 +39,41 @@ st.markdown("""
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-/* Target all buttons within the sidebar container */
-    section[data-testid="stSidebar"] .stButton button {
-        width: 100%;
-        border-radius: 10px;
-        height: 3em;
-        background-color: white;
-        border: 1px solid #ddd;
-        transition: all 0.3s;
-        display: flex;
-        justify-content: flex-start; /* Align text/icon to the left */
-        padding-left: 20px;
-    }
-    
-    /* Optional: Add a hover effect to make it feel like a real menu */
-    section[data-testid="stSidebar"] .stButton button:hover {
-        border-color: #636EFA;
-        color: #636EFA;
-        background-color: #f0f2f6;
-    }
-   
+/* SIDEBAR WIDTH */
+[data-testid="stSidebar"] {
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
+    background: linear-gradient(180deg,#0B1F3A 0%, #102B50 100%);
+}
+
+/* SIDEBAR BUTTON FULL WIDTH */
+section[data-testid="stSidebar"] div.stButton > button {
+    width: 100%;
+    height: 55px;
+    border-radius: 14px;
+    background-color: #112D4E;
+    color: white;
+    border: 1px solid #1E4D7A;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-left: 18px;
+    transition: 0.3s;
+}
+
+/* HOVER EFFECT */
+section[data-testid="stSidebar"] div.stButton > button:hover {
+    background-color: #1B4F8C;
+    border: 1px solid #4FC3F7;
+    transform: translateX(3px);
+}
+
+/* REMOVE EXTRA SPACE */
+section[data-testid="stSidebar"] {
+    padding-top: 20px;
+}
 
 
 """, unsafe_allow_html=True)
