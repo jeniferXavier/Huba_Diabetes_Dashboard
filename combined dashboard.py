@@ -711,7 +711,7 @@ elif menu == "Insights":
             importance = pd.DataFrame({
                 "Feature": features,
                 "Importance": model.feature_importances_
-            }).sort_values("Importance", ascending=True)
+            }).sort_values("Importance", ascending=True).round(2)
     
             fig = px.bar(
                 importance,
