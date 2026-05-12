@@ -380,7 +380,7 @@ elif menu == "Insights":
 
     with tabs[1]:
         st.subheader("Glucose Monitoring Overview")
-        df['time'] = pd.to_datetime(df['time'])
+        df_view['time'] = pd.to_datetime(df['time'])
         hourly_glucose = df.groupby("hour")["glucose"].mean().reset_index()
 
         fig = px.line(
