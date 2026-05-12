@@ -838,27 +838,18 @@ elif menu == "Key Takeaways":
 elif menu == "Conclusions":
 
     st.title("✅ Conclusions")
-
     st.markdown("""
-    ### Final Conclusion
+    <div class='insight-box'>
+        <b>Key Final Conclusion</b><br><br>
+        This dashboard successfully combines descriptive,predictive, and prescriptive analytics into one unified healthcare platform.<br><br>
+        The dashboard demonstrates how machine learning,CGM analytics, insulin intelligence,and behavioral monitoring can improve diabetes management and proactive care.<br/><br/>
+        This platform supports:
+        - early risk stratification<br><br>
+        - personalized intervention<br>
+        - glucose stability optimization<br>
+        - intelligent insulin decision support<br>
+        - real-time diabetes monitoring<br>
+    </div>
+    """, unsafe_allow_html=True)
 
-    GlucoAI successfully combines descriptive,
-    predictive, and prescriptive analytics into
-    one unified AI healthcare platform.
-
-    The dashboard demonstrates how machine learning,
-    CGM analytics, insulin intelligence,
-    and behavioral monitoring can improve
-    diabetes management and proactive care.
-
-    This platform supports:
-    - early risk stratification
-    - personalized intervention
-    - glucose stability optimization
-    - intelligent insulin decision support
-    - real-time diabetes monitoring
-    """)
-
-    st.success(
-        "Future Scope: Real-time wearable integration + AI recommendation engine."
-    )
+   
