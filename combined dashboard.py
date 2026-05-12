@@ -764,7 +764,7 @@ elif menu == "Insights":
             score["stability_score"] +
             score["hypo_safety_score"] +
             score["activity_score"]
-        ).clip(0, 100)
+        ).clip(0, 100).round(2)
     
         score = score.sort_values(
             "insulin_effectiveness_score",
