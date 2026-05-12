@@ -69,14 +69,15 @@ st.markdown("""
 
 st.markdown("""
 <div style="
-background:linear-gradient(90deg,#0f766e,#2563eb);
-padding:30px;
-border-radius:24px;
-color:white;
-margin-bottom:25px;">
+    background:linear-gradient(90deg,#0f766e,#2563eb);
+    padding:35px;
+    border-radius:25px;
+    color:white;">
 <h1>🩺 GlucoAI Diabetes Intelligence Platform</h1>
 <h4>Predictive + Prescriptive Analytics for CGM, Insulin, Meals, Activity, Sleep & Risk Forecasting</h4>
-<p>Hackathon-ready AI dashboard for real-time glucose intelligence, patient risk scoring, and personalized recommendations.</p>
+<p>This platform integrates Continuous Glucose Monitoring (CGM),
+    insulin delivery, meal behavior, activity, sleep, and
+    cardiovascular signals into a unified clinical intelligence dashboard.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -212,21 +213,7 @@ daily["daily_tir"] *= 100
 
 if menu == "Introduction":
 
-    st.markdown("""
-    <div style="
-    background:linear-gradient(90deg,#0f766e,#2563eb);
-    padding:35px;
-    border-radius:25px;
-    color:white;">
-    <h1>🩺 GlucoAI Diabetes Intelligence Platform</h1>
-    <h3>AI-Powered Predictive + Prescriptive Diabetes Analytics</h3>
-    <p>
-    This platform integrates Continuous Glucose Monitoring (CGM),
-    insulin delivery, meal behavior, activity, sleep, and
-    cardiovascular signals into a unified clinical intelligence dashboard.
-    </p>
-    </div>
-    """, unsafe_allow_html=True)
+    
 
     st.markdown("## 🎯 Project Objectives")
 
