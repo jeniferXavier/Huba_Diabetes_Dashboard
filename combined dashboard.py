@@ -85,7 +85,7 @@ section[data-testid="stSidebar"] {
     top: 10px;
     z-index: 999;
     background: #0B2447;
-    padding-top: 10px;
+    padding-top: 0px;
     padding-bottom: 10px;
 }
 
