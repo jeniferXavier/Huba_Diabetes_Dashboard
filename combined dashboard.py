@@ -240,14 +240,14 @@ daily["daily_tir"] *= 100
 
 if menu == "Introduction":
 
-  st.image("Assets/Introduction.png", use_container_width=True)
+  st.image("Team4_Pycore_Images/Introduction.png", use_container_width=True)
 # ===================================================
 # OVERVIEW PAGE
 # ===================================================
 
 elif menu == "Overview":
 
-    st.image("Assets/dataoverview.png", use_container_width=True)
+    st.image("Team4_Pycore_Images/dataoverview.png", use_container_width=True)
 
   
 
