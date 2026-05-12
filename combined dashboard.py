@@ -117,6 +117,7 @@ def load_data():
     return df
 
 df = load_data()
+st.write(df["time"].sample(20))
 st.write(df["time"].min())
 st.write(df["time"].max())
 # ---------------------------------------------------
