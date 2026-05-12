@@ -840,11 +840,11 @@ elif menu == "Conclusions":
     st.title("✅ Conclusions")
     st.markdown("""
     <div class='insight-box'>
-        <b>Key Final Conclusion</b><br><br>
-        This dashboard successfully combines descriptive,predictive, and prescriptive analytics into one unified healthcare platform.<br><br>
-        The dashboard demonstrates how machine learning,CGM analytics, insulin intelligence,and behavioral monitoring can improve diabetes management and proactive care.<br/><br/>
+        <b>Key Final Conclusion</b><br>
+        This dashboard successfully combines descriptive,predictive, and prescriptive analytics into one unified healthcare platform.<br>
+        The dashboard demonstrates how machine learning,CGM analytics, insulin intelligence,and behavioral monitoring can improve diabetes management and proactive care.<br/>
         This platform supports:
-        - early risk stratification<br><br>
+        - early risk stratification<br>
         - personalized intervention<br>
         - glucose stability optimization<br>
         - intelligent insulin decision support<br>
