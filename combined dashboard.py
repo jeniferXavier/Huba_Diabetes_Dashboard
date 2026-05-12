@@ -50,9 +50,7 @@ st.markdown("""
     box-shadow: 0 3px 12px rgba(0,0,0,0.08);
 }
 
-[data-testid="stMarkdownContainer"] p {
-    color: white;
-}
+
 
 /* SIDEBAR BUTTON FULL WIDTH */
 section[data-testid="stSidebar"] div.stButton > button {
@@ -206,21 +204,26 @@ menu = st.session_state.menu
 # PATIENT FILTER - SINGLE SELECT DROPDOWN
 # ---------------------------------------------------
 
-st.sidebar.markdown("---")
-
 patients = sorted(df["patient_id"].unique())
 
+patient_options = ["All Patients"] + patients
+
 selected_patient = st.sidebar.selectbox(
-    "Select Patient",
-    patients,
-    index=0
+"Select Patient",
+patient_options,
+index=0
 )
 
-df_view = df[df["patient_id"] == selected_patient].copy()
+if selected_patient == "All Patients":
+ df_view = df.copy()
+else:
+ df_view = df[df["patient_id"] == selected_patient].copy()
 
 if df_view.empty:
-    st.warning("Please select a patient.")
+    st.warning("No data available for selected patient.")
     st.stop()
+
+
 # ---------------------------------------------------
 # DAILY SUMMARY
 # ---------------------------------------------------
