@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, mean_absolute_error, 
 # ---------------------------------------------------
 
 st.set_page_config(
-    page_title="GlucoAI Diabetes Dashboard",
+    page_title="Diabetes Dashboard",
     page_icon="🩺",
     layout="wide"
 )
@@ -176,7 +176,7 @@ if st.sidebar.button("📘 Overview"):
 if st.sidebar.button("🧹 Data Cleaning"):
     st.session_state.menu = "Data Cleaning"
 
-if st.sidebar.button("📊 Insights Dashboard"):
+if st.sidebar.button("📊 Insights"):
     st.session_state.menu = "Insights"
 
 if st.sidebar.button("📌 Key Takeaways"):
@@ -300,7 +300,7 @@ elif menu == "Data Cleaning":
 
 elif menu == "Insights":
 
-    st.title("📊 Diabetes Insights Dashboard")
+    st.title("📊 Diabetes Dashboard")
 
     # ---------------------------------------------------
     # KPI ROW
