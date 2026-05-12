@@ -282,13 +282,9 @@ elif menu == "Data Cleaning":
 
     ✔ Generated hypoglycemia and hyperglycemia flags
 
-    ✔ Merged demographic data with CGM dataset
-
     ✔ Handled missing insulin and activity values
 
-    ✔ Created predictive AI features
-
-    ✔ Created prescriptive intervention metrics
+    
     """)
 
     st.subheader("🧠 Engineered Features")
