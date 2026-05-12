@@ -227,7 +227,7 @@ daily = (
         total_carbs=("carb_input", "sum"),
         hypo_rate=("is_hypoglycemia", "mean"),
         hyper_rate=("is_hyperglycemia", "mean")
-    )
+    ).round(2)
     .reset_index()
 )
 
