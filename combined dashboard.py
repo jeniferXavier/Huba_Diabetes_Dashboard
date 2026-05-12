@@ -275,27 +275,19 @@ elif menu == "Overview":
 elif menu == "Data Cleaning":
 
     st.title("🧹 Data Cleaning & Feature Engineering")
-
     st.markdown("""
-    ### Data Cleaning Steps
-
-    ✔ Removed null glucose and timestamp values
-
-    ✔ Converted timestamps into datetime format
-
-    ✔ Created hourly and daily features
-
-    ✔ Generated glucose rolling mean and rolling standard deviation
-
-    ✔ Created glucose rate-of-change (ROC)
-
-    ✔ Generated hypoglycemia and hyperglycemia flags
-
-    ✔ Handled missing insulin and activity values
-
+        <div class='insight-box'>
+        <b>Data Cleaning Steps:</b><br><br>
+            ✅ Removed null glucose and timestamp values<br/><br/>
+            ✅ Converted timestamps into datetime format<br><br>
+            ✅ Created hourly and daily features<br><br>
+            ✅ Generated glucose rolling mean and rolling standard deviation<br><br>
+            ✅ Created glucose rate-of-change (ROC)<br><br>
+            ✅ Generated hypoglycemia and hyperglycemia flags<br><br>
+            ✅ Handled missing insulin and activity values
+        </div>
+    """, unsafe_allow_html=True)
     
-    """)
-
     st.subheader("🧠 Engineered Features")
 
     engineered = pd.DataFrame({
@@ -843,7 +835,7 @@ elif menu == "Conclusions":
         <b>Key Final Conclusion</b><br>
         This dashboard successfully combines descriptive,predictive, and prescriptive analytics into one unified healthcare platform.<br>
         The dashboard demonstrates how machine learning,CGM analytics, insulin intelligence,
-        and behavioral monitoring can improve diabetes management and proactive care.<br/>
+        and behavioral monitoring can improve diabetes management and proactive care.<br><br>
         This platform supports:<br><br>
         ✅ early risk stratification<br><br>
         ✅ personalized intervention<br><br>
