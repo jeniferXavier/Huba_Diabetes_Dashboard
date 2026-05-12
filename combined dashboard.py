@@ -125,7 +125,8 @@ df = load_data()
 
 df = df.dropna(subset=["patient_id", "time", "glucose"])
 df = df.sort_values(["patient_id", "time"])
-
+st.write(df["time"].min())
+st.write(df["time"].max())
 bolus_col = "bolus_volume_delivered" if "bolus_volume_delivered" in df.columns else "bolus"
 
 for col in ["steps", "heart_rate", "basal_rate", "carb_input", bolus_col]:
