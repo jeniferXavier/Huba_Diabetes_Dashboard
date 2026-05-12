@@ -45,7 +45,6 @@ st.markdown("""
     min-width: 320px;
     max-width: 320px;
     background: linear-gradient(180deg,#0B1F3A 0%, #102B50 100%);
-    margin:0px;
 }
 
 /* SIDEBAR BUTTON FULL WIDTH */
@@ -71,7 +70,10 @@ section[data-testid="stSidebar"] div.stButton > button:hover {
     transform: translateX(3px);
 }
 
-
+/* REMOVE EXTRA SPACE */
+section[data-testid="stSidebar"] {
+    padding-top: 5px;
+}
 
 
 """, unsafe_allow_html=True)
