@@ -361,9 +361,9 @@ elif menu == "Insights":
     with tabs[0]:
 
          col1, col2 = st.columns(2)
-            with col1:
-                 if 'gender' in df.columns:
-    
+         with col1:
+            if 'gender' in df.columns:
+
                 gender_chart = px.pie(
                     df,
                     names='gender',
@@ -375,8 +375,8 @@ elif menu == "Insights":
                     use_container_width=True
                 )
     
-            with col2:
-                if 'age' in df.columns:
+         with col2:
+            if 'age' in df.columns:
     
                 age_chart = px.histogram(
                     df,
