@@ -215,7 +215,7 @@ if df_view.empty:
 
 daily = (
     df_view
-    .groupby(["patient_id", "time"])
+    .groupby(["patient_id", "date"])
     .agg(
         daily_tir=("is_in_range", "mean"),
         avg_glucose=("glucose", "mean"),
