@@ -103,24 +103,6 @@ section[data-testid="stSidebar"] {
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------
-# HEADER
-# ---------------------------------------------------
-
-#st.markdown("""
-#<div style="
-#    background:linear-gradient(90deg,#0f766e,#2563eb);
- #   padding:35px;
- #   border-radius:25px;
- #   color:white;">
-#<h1>🩺 GlucoAI Diabetes Intelligence Platform</h1>
-#<h4>Predictive + Prescriptive Analytics for CGM, Insulin, Meals, Activity, Sleep & Risk Forecasting</h4>
-#<p>This platform integrates Continuous Glucose Monitoring (CGM),
- #   insulin delivery, meal behavior, activity, sleep, and
- #   cardiovascular signals into a unified clinical intelligence dashboard.</p>
-#</div>
-#""", unsafe_allow_html=True)
-
-# ---------------------------------------------------
 # LOAD DATA
 # ---------------------------------------------------
 
@@ -398,7 +380,7 @@ elif menu == "Insights":
 
     with tabs[1]:
         st.subheader("Glucose Monitoring Overview")
-
+        df['time'] = pd.to_datetime(df['time'])
         fig = px.line(
             df_view,
             x="time",
