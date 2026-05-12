@@ -111,7 +111,6 @@ def load_data():
     demo = pd.read_csv("cleaned_demographics.csv")
     df["time"] = df["time"].astype(str)
     df["time"] = pd.to_datetime(df["time"], unit="ms")
-    df["time"] = df["time"].astype(str)
     if "patient_id" in demo.columns:
         df = df.merge(demo, on="patient_id", how="left")
 
