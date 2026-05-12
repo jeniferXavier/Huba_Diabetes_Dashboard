@@ -526,7 +526,7 @@ elif menu == "Insights":
                     avg_instability=("glucose_rolling_std_1h", "mean"),
                     avg_glucose=("glucose", "mean")
                 )
-                .reset_index()
+                .reset_index().round(2)
             )
         
             col1, col2 = st.columns(2)
@@ -568,7 +568,7 @@ elif menu == "Insights":
             night_df
             .groupby("basal_rate")["nocturnal_hypo"]
             .mean()
-            .reset_index()
+            .reset_index().round(2)
         )
     
         col1, col2 = st.columns(2)
