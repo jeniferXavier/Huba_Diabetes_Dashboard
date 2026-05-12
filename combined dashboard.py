@@ -124,7 +124,7 @@ df = load_data()
 
 df = df.dropna(subset=["patient_id", "time", "glucose"])
 
-df = df.sort_values(["patient_id", "time"])
+
 
 bolus_col = "bolus_volume_delivered" if "bolus_volume_delivered" in df.columns else "bolus"
 
