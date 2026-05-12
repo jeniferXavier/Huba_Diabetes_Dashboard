@@ -26,54 +26,67 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-.stApp {
-    background: linear-gradient(180deg, #f8fbff 0%, #eef6ff 100%);
-}
-.block-container {
-    padding-top: 1.5rem;
-}
-[data-testid="stMetric"] {
-    background: white;
-    padding: 18px;
-    border-radius: 18px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-}
-
-/* SIDEBAR WIDTH */
+/* Sidebar container */
 [data-testid="stSidebar"] {
-    width: 320px;
-    min-width: 320px;
-    max-width: 320px;
-    background: linear-gradient(180deg,#0B1F3A 0%, #102B50 100%);
+    background: background: linear-gradient(180deg, #4A8FCC, #6BB0F0);
+    padding-top: 0rem;
 }
 
-/* SIDEBAR BUTTON FULL WIDTH */
-section[data-testid="stSidebar"] div.stButton > button {
-    width: 240px;
-    height: 55px;
-    border-radius: 14px;
-    background-color: #112D4E;
-    color: white;
-    border: 1px solid #1E4D7A;
-    font-size: 16px;
+/* Push multiselect/search to top */
+[data-testid="stSidebar"] .stMultiSelect {
+    position: sticky;
+    top: 10px;
+    z-index: 999;
+    background: #0B2447;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Search input box */
+[data-testid="stSidebar"] input {
+    background-color: #102B4E !important;
+    color: white !important;
+    border-radius: 10px !important;
+    border: 1px solid #1F5C99 !important;
+    padding: 10px !important;
+}
+
+/* Placeholder text */
+[data-testid="stSidebar"] input::placeholder {
+    color: #AFCBFF !important;
+}
+
+/* Selected patient tags */
+.stMultiSelect [data-baseweb="tag"] {
+    background-color: #FF5757 !important;
+    color: white !important;
+    border-radius: 8px !important;
     font-weight: 600;
-    margin-bottom: 5px;
-    text-align: left;
-    padding-left: 18px;
-    transition: 0.3s;
 }
 
-/* HOVER EFFECT */
-section[data-testid="stSidebar"] div.stButton > button:hover {
-    background-color: #1B4F8C;
-    border: 1px solid #4FC3F7;
-    transform: translateX(3px);
+/* Dropdown background */
+[data-baseweb="popover"] {
+    background-color: #102B4E !important;
+    border-radius: 12px !important;
 }
 
-/* REMOVE EXTRA SPACE */
-section[data-testid="stSidebar"] {
-    padding-top: 5px;
+/* Dropdown options */
+[data-baseweb="menu"] div {
+    color: white !important;
+    background-color: #102B4E !important;
 }
+
+/* Hover effect */
+[data-baseweb="menu"] div:hover {
+    background-color: #1F5C99 !important;
+}
+
+/* Remove extra spacing */
+.css-1d391kg {
+    padding-top: 0rem !important;
+}
+
+
 
 
 """, unsafe_allow_html=True)
@@ -155,7 +168,7 @@ df["is_hyperglycemia"] = (df["glucose"] > 180).astype(int)
 # SIDEBAR NAVIGATION
 # ---------------------------------------------------
 
-st.sidebar.title("🧭 Navigation Menu")
+#st.sidebar.title("🧭 Navigation Menu")
 
 if "menu" not in st.session_state:
     st.session_state.menu = "Introduction"
